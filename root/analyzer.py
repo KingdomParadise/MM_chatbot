@@ -1,5 +1,4 @@
-import re
-from geopy.geocoders import Nominatim
+import re,requests 
 
  
  
@@ -22,14 +21,12 @@ def ZIPCODE_FINDER(message):
     message = str(message).lower().split(' ')
     for keyword in message:
         if len(keyword)==5 and str(keyword).isnumeric():
-            # Using Nominatim Api
-            geolocator = Nominatim(user_agent="geoapiExercises") 
-            location = geolocator.geocode(keyword) 
-            if location is not None:
+            url = f"https://maps.googleapis.com/maps/api/geocode/json?address={keyword}&key=AIzaSyAJGToD7umZ-VdfAl95vSnd1AlxVxt9lUI"
+            response = requests.get(url).json()['status']
+            if response=='OK':
                 print("ZIP_CODE validated by API")
                 zipcode=keyword
-            else:
-                print("FAILDED -- ZIP_CODE validation by API")
+                return zipcode 
 
         else:
             zipcode=None
@@ -44,10 +41,17 @@ def EMAIL_FINDER(message):
    
     if len(email)>0 :
         email = email[0]
-    if len(email)==0:
+        response = requests.get("https://isitarealemail.com/api/email/validate",params = {'email': email})
+        status = response.json()['status']
+        if status=='valid':
+            
+            print(email)
+            print("\n\nEMAIL validated by API\n\n")
+            return email
+    elif len(email)==0:
         email = None 
-    print(email)
-    return email
+        print("EMAIL -> NONE")
+        return email
      
 
  
