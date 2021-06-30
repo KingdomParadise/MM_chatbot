@@ -19,26 +19,23 @@ def INIT_MESSAGE_HANDLER(message):
   
 def ZIPCODE_FINDER(message):
     message = str(message).lower().split(' ')
+    zipcode=''
     for keyword in message:
         if len(keyword)==5 and str(keyword).isnumeric():
-<<<<<<< HEAD
-            # Using Nominatim Api
-            # Using Nominatim Api
-            geolocator = Nominatim(user_agent="geoapiExercises") 
-            location = geolocator.geocode(keyword) 
-            if location is not None:
-=======
             url = f"https://maps.googleapis.com/maps/api/geocode/json?address={keyword}&key=AIzaSyAJGToD7umZ-VdfAl95vSnd1AlxVxt9lUI"
-            response = requests.get(url).json()['status']
+            response = requests.get(url)
+            print(response)
+            response = response.json()['status']
             if response=='OK':
->>>>>>> dc7e1144ab852f32baaad0de4de56cd2227e36b8
                 print("ZIP_CODE validated by API")
                 zipcode=keyword
+                print("-->> zipcode",zipcode)
                 return zipcode 
 
         else:
             zipcode=None
-    return zipcode
+            print("-->> zipcode",zipcode)
+            return zipcode
      
 
  
