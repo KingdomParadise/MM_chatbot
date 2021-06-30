@@ -20,7 +20,7 @@ def INIT_MESSAGE_HANDLER(message):
 def ZIPCODE_FINDER(message):
     message = str(message).lower().split(' ')
     zipcode=''
-    for keyword in message:
+    for keyword in message:  
         if len(keyword)==5 and str(keyword).isnumeric():
             url = f"https://maps.googleapis.com/maps/api/geocode/json?address={keyword}&key=AIzaSyAJGToD7umZ-VdfAl95vSnd1AlxVxt9lUI"
             response = requests.get(url)
@@ -32,10 +32,11 @@ def ZIPCODE_FINDER(message):
                 print("-->> zipcode",zipcode)
                 return zipcode 
 
-        else:
-            zipcode=None
-            print("-->> zipcode",zipcode)
-            return zipcode
+         
+    else:
+        zipcode=None
+        print("-->> zipcode",zipcode)
+        return zipcode
      
 
  
