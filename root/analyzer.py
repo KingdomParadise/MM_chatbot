@@ -23,6 +23,7 @@ def ZIPCODE_FINDER(message):
     for keyword in message:
         if len(keyword)==5 and str(keyword).isnumeric():
             # Using Nominatim Api
+            # Using Nominatim Api
             geolocator = Nominatim(user_agent="geoapiExercises") 
             location = geolocator.geocode(keyword) 
             if location is not None:

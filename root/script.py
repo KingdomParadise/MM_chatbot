@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time,os,uuid,json,re,sched, timeit,django  
-from analyzer import *
+from .analyzer import *
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PROJECT.settings')
