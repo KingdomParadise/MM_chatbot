@@ -1,8 +1,5 @@
 import re,requests 
 
- 
- 
- 
 def INIT_MESSAGE_HANDLER(message):
     message = str(message).lower()
     possible_keywords = ['hello','hola','hi','hey','helo']
@@ -14,9 +11,6 @@ def INIT_MESSAGE_HANDLER(message):
         init =  'irrelevent-int--force-zipcode'
         return init
 
-  
- 
-  
 def ZIPCODE_FINDER(message):
     message = str(message).lower().split(' ')
     for keyword in message:
@@ -27,14 +21,10 @@ def ZIPCODE_FINDER(message):
                 print("ZIP_CODE validated by API")
                 zipcode=keyword
                 return zipcode 
-
         else:
             zipcode=None
     return zipcode
      
-
- 
-  
 def EMAIL_FINDER(message):
     message = str(message).lower()
     email = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", message)
@@ -44,7 +34,7 @@ def EMAIL_FINDER(message):
         response = requests.get("https://isitarealemail.com/api/email/validate",params = {'email': email})
         status = response.json()['status']
         if status=='valid':
-            
+            print(response.json())
             print(email)
             print("\n\nEMAIL validated by API\n\n")
             return email
@@ -54,4 +44,40 @@ def EMAIL_FINDER(message):
         return email
      
 
- 
+def USER_CONFIGURATION_FINDER(token):
+        url = 'https://lifeline.cgmllc.net/api/v2/userconfiguration'
+        #myobj = {'Token': token}
+        myobj = {'Token': 'd3a1b634-90a7-eb11-a963-005056a96ce9'}
+        #x = requests.post(url, data = myobj)
+        response = requests.get(url,params=myobj)
+        if response.json()['Response']['Status']=="Success":
+            return response.json()['Response']
+        else:
+            return ""
+        
+def START_ORDERATION(token,SerialNumber,Platform,AppVersion,State,StaleTypeld,Latitude,Longitude):
+    url = 'http://lifeline.cgmllc.net/api/v2/startorder'
+    myobj = {'Token': token, 
+             'SerialNumber' : SerialNumber, 
+             'Platform': Platform,
+             'AppVersion': AppVersion,
+             'State': State,
+             'StaleTypeld': StaleTypeld,
+             'Latitude': Latitude,
+             'Longitude': Longitude
+             }
+    myobj_Test = {'Token': ' ', 
+             'SerialNumber' : 'www.zapier.com', 
+             'Platform': 'WebApp',
+             'AppVersion': '89.0.4389.72',
+             'State': '',
+             'StaleTypeld': '3',
+             'Latitude': '',
+             'Longitude': ''
+             }
+    response = requests.get(url,params=myobj_Test)
+    if response.json()['Response']['Status']=="Success":
+            return response.json()['Response']
+    else:
+            return ""
+     
