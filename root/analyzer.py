@@ -13,17 +13,30 @@ def INIT_MESSAGE_HANDLER(message):
 
 def ZIPCODE_FINDER(message):
     message = str(message).lower().split(' ')
-    for keyword in message:
+    zipcode=''
+    for keyword in message:  
         if len(keyword)==5 and str(keyword).isnumeric():
             url = f"https://maps.googleapis.com/maps/api/geocode/json?address={keyword}&key=AIzaSyAJGToD7umZ-VdfAl95vSnd1AlxVxt9lUI"
-            response = requests.get(url).json()['status']
+            response = requests.get(url)
+            print(response)
+            response = response.json()['status']
             if response=='OK':
                 print("ZIP_CODE validated by API")
                 zipcode=keyword
+                print("-->> zipcode",zipcode)
                 return zipcode 
+<<<<<<< HEAD
         else:
             zipcode=None
     return zipcode
+=======
+
+         
+    else:
+        zipcode=None
+        print("-->> zipcode",zipcode)
+        return zipcode
+>>>>>>> dc498ad9710ae4f3c72d8a62ebecb325ede6c5d5
      
 def EMAIL_FINDER(message):
     message = str(message).lower()
