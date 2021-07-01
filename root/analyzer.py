@@ -25,18 +25,12 @@ def ZIPCODE_FINDER(message):
                 zipcode=keyword
                 print("-->> zipcode",zipcode)
                 return zipcode 
-<<<<<<< HEAD
+         
         else:
             zipcode=None
-    return zipcode
-=======
+            print("-->> zipcode",zipcode)
+            return zipcode
 
-         
-    else:
-        zipcode=None
-        print("-->> zipcode",zipcode)
-        return zipcode
->>>>>>> dc498ad9710ae4f3c72d8a62ebecb325ede6c5d5
      
 def EMAIL_FINDER(message):
     message = str(message).lower()
