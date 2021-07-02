@@ -1,4 +1,4 @@
-import re,requests 
+import re, requests 
 
 def INIT_MESSAGE_HANDLER(message):
     message = str(message).lower()
@@ -30,7 +30,6 @@ def ZIPCODE_FINDER(message):
             zipcode=None
             print("-->> zipcode",zipcode)
             return zipcode
-
      
 def EMAIL_FINDER(message):
     message = str(message).lower()
@@ -55,8 +54,9 @@ def USER_CONFIGURATION_FINDER(token):
         url = 'https://lifeline.cgmllc.net/api/v2/userconfiguration'
         #myobj = {'Token': token}
         myobj = {'Token': 'd3a1b634-90a7-eb11-a963-005056a96ce9'}
-        #x = requests.post(url, data = myobj)
+  
         response = requests.get(url,params=myobj)
+        print(response)
         if response.json()['Response']['Status']=="Success":
             return response.json()['Response']
         else:
@@ -83,6 +83,7 @@ def START_ORDERATION(token,SerialNumber,Platform,AppVersion,State,StaleTypeld,La
              'Longitude': ''
              }
     response = requests.get(url,params=myobj_Test)
+    print(response)
     if response.json()['Response']['Status']=="Success":
             return response.json()['Response']
     else:

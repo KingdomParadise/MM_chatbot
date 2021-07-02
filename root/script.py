@@ -26,6 +26,7 @@ def generateReply(chatid, incoming_message):
     currentchat = ChatTracker.objects.get(chatid=chatid)
     avaliable_choices = ['inithello','irrelevent-int--force-zipcode','zipcode','email','user_configuration']
    
+    print (chatid, incoming_message)
     if currentchat.init_message=='':
         init_message = INIT_MESSAGE_HANDLER(incoming_message) 
         if init_message in avaliable_choices:
@@ -46,11 +47,11 @@ def generateReply(chatid, incoming_message):
                 if zipcode is not None: 
                     currentchat.zipcode=zipcode
                     currentchat.save()
-                    reply = "What is your email address? (Ex: example@mail.com) "
+                    reply = ["What is your email address? (Ex: example@mail.com) "]
                     print(reply)
                     return reply
                 elif zipcode==None:
-                    reply = "That Zip Code was not valid"
+                    reply = ["That Zip Code was not valid"]
                     print(reply)
                     return reply
         
@@ -62,61 +63,79 @@ def generateReply(chatid, incoming_message):
             if email is not None:
                 currentchat.email = email
                 currentchat.save()
-                reply = "Making sure that's a real email 💌  YAY, Thank You! 🎉This will just take a few seconds 😊You are on your way to a FREE phone!"
+                reply = ["Making sure that's a real email 💌","  YAY, Thank You! 🎉","This will just take a few seconds 😊You are on your way to a FREE phone!"]
                 print(reply)
                 return reply
             elif email is None:
-                reply = "Making sure that's a real email 💌  Please enter a valid Email Address"
+                reply = ["Making sure that's a real email 💌 "," Please enter a valid Email Address"]
                 print(reply)
                 return reply
     
 def generateUserReply(token):
-        currentchat = UserConfiguration.objects.get()
-        currentchat.Token = token
-        token = "d3a1b634-90a7-eb11-a963-005056a96ce9"   
-
-        reply = "Hurray that was a valid zip code! 🎉"
-                
         data = USER_CONFIGURATION_FINDER(token)
+
+        reply = {"message":"Hurray that was a valid zip code! 🎉",
+                 "FirstName":data['FirstName'],
+                 "LastName":data['LastName'],
+                 "ZipFilePassword":data['ZipFilePassword'],
+                 "RequirePhoneNumber":data['RequirePhoneNumber'],
+                 "RequireEmailAddress":data['RequireEmailAddress'],
+                 "ReservationApiVersion":data['ReservationApiVersion'],
+                 "ReservationUserCode":data['ReservationUserCode'],
+                 "ReservationAgentCode":data['ReservationAgentCode'],
+                 "ReservationClientCode":data['ReservationClientCode'],
+                 "ReservationVendorCode":data['ReservationVendorCode'],
+                 "States":data['States'],
+                 "Status":data['Status'],
+        }
         
-        currentchat.FirstName = data['FirstName']
-        currentchat.lastName = data['LastName']
-        currentchat.zipFilePassword = data['ZipFilePassword']
-        currentchat.RequirePhoneNumber = data['RequirePhoneNumber']
-        currentchat.RequireEmailAddress = data['RequireEmailAddress']
-        currentchat.ReservationApiVersion = data['ReservationApiVersion']
-        currentchat.ReservationUserCode = data['ReservationUserCode']
-        currentchat.ReservationAgentCode = data['ReservationAgentCode']
-        currentchat.ReservationClientCode = data['ReservationClientCode']
-        currentchat.ReservationVenderCode = data['ReservationVenderCode']
-        currentchat.ECommCaliforniaFlow = data['States']
-        currentchat.Status = data['Status']
-        currentchat.save()
+      #  currentchatuser.FirstName = data['FirstName']
+      #  currentchatuser.lastName = data['LastName']
+      #  currentchatuser.zipFilePassword = data['ZipFilePassword']
+      #  currentchatuser.RequirePhoneNumber = data['RequirePhoneNumber']
+      #  currentchatuser.RequireEmailAddress = data['RequireEmailAddress']
+      #  currentchatuser.ReservationApiVersion = data['ReservationApiVersion']
+      #  currentchatuser.ReservationUserCode = data['ReservationUserCode']
+      #  currentchatuser.ReservationAgentCode = data['ReservationAgentCode']
+      #  currentchatuser.ReservationClientCode = data['ReservationClientCode']
+      #  currentchatuser.ReservationVenderCode = data['ReservationVenderCode']
+      #  currentchatuser.ECommCaliforniaFlow = data['States']
+      #  currentchatuser.Status = data['Status']
+      #  currentchatuser.save()
+
         return reply
     
 def generateStatementReply(Token,SerialNumber,Platform,AppVersion,State,SaleTypeId,Latitude,Longitude):
-    currentchat = StartOrder.objects.get()  
-    currentchat.Token = Token
-    currentchat.SerialNumber = SerialNumber
-    currentchat.platForm = Platform
-    currentchat.platForm = AppVersion
-    currentchat.State = State
-    currentchat.saleTypeId = SaleTypeId
-    currentchat.Latitude = Latitude
-    currentchat.Longitude = Longitude
+    #currentchat = StartOrder.objects.get()  
+    #currentchat.Token = Token
+    #currentchat.SerialNumber = SerialNumber
+    #currentchat.platForm = Platform
+    #currentchat.platForm = AppVersion
+    #currentchat.State = State
+    #currentchat.saleTypeId = SaleTypeId
+    #currentchat.Latitude = Latitude
+    #currentchat.Longitude = Longitude
 
-    reply = "Let's Start your FREE Application 😎"
-    
+
+    print("dfdf")
     data = START_ORDERATION(Token,SerialNumber,Platform,AppVersion,State,SaleTypeId,Latitude,Longitude)
     
-    currentchat.Result = data['Result']
-    currentchat.OrderNumber = data['OrderNumber']
-    currentchat.OrderDate = data['OrderDate']
-    currentchat.PackageID = data['PackageId']
-    currentchat.Status = data['Status']
-    currentchat.Message = data['Message']
+    #currentchat.Result = data['Result']
+    #currentchat.OrderNumber = data['OrderNumber']
+    #currentchat.OrderDate = data['OrderDate']
+    #currentchat.PackageID = data['PackageId']
+    #currentchat.Status = data['Status']
+    #currentchat.Message = data['Message']
         
-    currentchat.save()
+    #currentchat.save()
+    print(data)
+    reply = {"message":"Let's Start your FREE Application 😎",
+              "Result":data['Result'],
+              "OrderDate":data['OrderDate'],
+              "PackageID":data['PackageId'],
+              "Status":data['Status'],
+              "Message":data['Message'],
+    }
     return reply
 
 if __name__ == '__main__':
