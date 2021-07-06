@@ -117,7 +117,7 @@ def generateStatementReply(Token,SerialNumber,Platform,AppVersion,State,SaleType
     #currentchat.Longitude = Longitude
 
 
-    print("dfdf")
+    
     data = START_ORDERATION(Token,SerialNumber,Platform,AppVersion,State,SaleTypeId,Latitude,Longitude)
     
     #currentchat.Result = data['Result']
