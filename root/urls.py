@@ -1,14 +1,13 @@
 
 from django.urls import path
-from . views import *
+from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
 
  
 urlpatterns = [ 
-     path('', index, name='index'),  
-    path('configurate/', userConfigurate, name='userConfigurate'),  
-    path('order/', orderStatement, name='orderStatement')         
+    path('mazamamedia_chatbotapi/', index, name='index'),       
+    path('submit_info/<str:id>', submit_info, name='submit_info'),       
      
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

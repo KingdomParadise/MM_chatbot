@@ -119,7 +119,7 @@ def generateReply(chatid,incoming_message):
                 print(reply)
                 return reply
             elif response=='send_link':
-                reply = f'http://localhost:8000/submit_info/{chatid}'
+                reply = f'http:127.0.0.1/{chatid}'
                 print(reply)
                 return reply
 
