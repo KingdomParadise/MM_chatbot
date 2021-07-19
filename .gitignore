@@ -57,7 +57,7 @@ coverage.xml
 
 # Django stuff: 
 /test.py
-
+/.vscode
 # Flask stuff:
 instance/
 .webassets-cache
