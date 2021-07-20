@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import time,os,uuid,json,re,sched, timeit,django  
 from analyzer import *
-from .CSGM_APIs import FLOWCHART3
+from CSGM_APIs import FLOWCHART3
 
 
 
@@ -119,7 +119,7 @@ def generateReply(chatid,incoming_message):
                 print(reply)
                 return reply
             elif response=='send_link':
-                reply = f'http:127.0.0.1/{chatid}'
+                reply = f'http://localhost:8000/submit_info/{chatid}'
                 print(reply)
                 return reply
 

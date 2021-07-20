@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 import time,os,uuid,json,re,sched, timeit,django  
 from analyzer import *
-from .CSGM_APIs import FLOWCHART3
+from CSGM_APIs import FLOWCHART3
 
 
 

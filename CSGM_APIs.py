@@ -11,7 +11,7 @@ def CheckAvailability_API(zipcode,email):
     print('-->> Calling CheckAvailability_API')
     res = requests.post(check_avaliability_url, data={'Token':token,'ZipCode':zipcode,'Email':email}).json()
     if res['Status']=='Success':
-        # print(res.json())
+        print(res)
         return res
         
     else:  
@@ -23,7 +23,7 @@ def CheckAvailability_API(zipcode,email):
 def UserConfiguration_API():
     print('-->> Calling UserConfiguration_API')
     res = requests.post(user_confituration_url,data={'Token':token}).json()
-    
+    print(res)
     if res['Status']=='Success':
             return res
     else:
@@ -32,6 +32,7 @@ def UserConfiguration_API():
 def StateConfiguration_API():
     print('-->> Calling StateConfiguration_API')
     res = requests.post(state_configuration_url,data={'Token':token,'state':'GA'}).json()
+    print(res)
     # print(res['TribalEligible'])
     if res['Status']=='Success':
         return res
@@ -51,7 +52,7 @@ def StartOrder_API():
         'SaleTypeid':3
         }
     res = requests.post(start_order_url,data=data).json()
-    
+    print(res)
     if res['Status']=='Success':
         return res
     else:
