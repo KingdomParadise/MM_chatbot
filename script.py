@@ -40,11 +40,11 @@ def generateReply(chatid,incoming_message):
         if init_message in avaliable_choices:
             currentchat.init_message = init_message
             currentchat.save() 
-            reply = ["Hello!👋 I am a bot and I am here to help.","What is your Zip Code?"]
+            reply = ["Hello! I am a bot here to help.","What is your Zip Code?"]
             print(reply)
             return reply  
         else:
-            reply = ["Hello!👋 I am a bot and I am here to help.","What is your Zip Code?"]
+            reply = ["Hello! I am a bot here to help.","What is your Zip Code?"]
             print(reply)
             return reply  
 
@@ -55,11 +55,11 @@ def generateReply(chatid,incoming_message):
                 if zipcode is not None: 
                     currentchat.zipcode=zipcode
                     currentchat.save()
-                    reply = "Great! That was a valid zip code! 🎉\nPlease enter your email address? (Ex: example@mail.com) 💬"
+                    reply = "What is your email address? (Ex: example@mail.com) "
                     print(reply)
                     return reply
                 elif zipcode==None:
-                    reply = "That Zip Code was not valid. Please enter a valid zip code."
+                    reply = "Please provide a valid ZipCode"
                     print(reply)
                     return reply
         
@@ -70,11 +70,11 @@ def generateReply(chatid,incoming_message):
             if email is not None:
                 currentchat.email = email
                 currentchat.save()
-                reply = "Thank You! This will just take a few seconds You are on your way to a FREE phone!📱"
+                reply = "YAY, Thank You! 🎉This will just take a few seconds 😊You are on your way to a FREE phone!"
                 print(reply)
                 return reply
             elif email is None:
-                reply = "That email address was not valid. Please enter a working email address. (Ex: example@mail.com)"
+                reply = "Please enter a valid Email Address"
                 print(reply)
                 return reply
 

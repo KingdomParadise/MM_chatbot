@@ -4,5 +4,3 @@ from .models import *
 
  
 admin.site.register(ChatTracker)
-admin.site.register(UserConfiguration)
-admin.site.register(StartOrder)
