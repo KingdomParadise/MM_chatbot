@@ -59,6 +59,7 @@ def StartOrder_API():
 
 
 def FLOWCHART3(zipcode,email):
+    print("here is flowchart 3")
     if CheckAvailability_API(zipcode,email):
         if UserConfiguration_API():
             if StateConfiguration_API():

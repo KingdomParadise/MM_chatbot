@@ -71,7 +71,10 @@ def generateReply(chatid,incoming_message):
                 currentchat.email = email
                 currentchat.save()
                 reply = "Thank You! This will just take a few seconds You are on your way to a FREE phone!📱"
+                currentchat.init_message = "STARTFLOWCHART3"
+                currentchat.save()
                 print(reply)
+                print(currentchat.init_message)
                 return reply
             elif email is None:
                 reply = "That email address was not valid. Please enter a working email address. (Ex: example@mail.com)"
@@ -101,7 +104,7 @@ def generateReply(chatid,incoming_message):
 
 
         #  HANDLING FLOWCHART 3
-        elif incoming_message=='STARTFLOWCHART3':
+        elif currentchat.init_message=='STARTFLOWCHART3':
             # email='denea1288@gmail.com'
             # email='denea128822@gmail.com'
             # zipcode=30314
@@ -130,5 +133,5 @@ def generateReply(chatid,incoming_message):
 #     return reply
 
 if __name__ == '__main__':
-    # generateReply(chatid,message)
-    generateReply(chatid,'STARTFLOWCHART3')
+     generateReply(chatid,message)
+    #generateReply(chatid,'STARTFLOWCHART3')
