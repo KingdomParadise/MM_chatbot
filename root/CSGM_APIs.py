@@ -68,7 +68,6 @@ def FLOWCHART3(zipcode,email):
                 else:
                     print('** API_1 FAILED :(')
                     return 'error_at_api4'
-
             else:
                 print('** API_1 FAILED :(')
                 return 'error_at_api3'
