@@ -250,6 +250,10 @@ def Coverage_check(id):
         "ResidenceZip": currentchat.ResidenceZip
         }
     res = requests.post(coverage_check,data=data).json()
+    if res['TribalFail'] == True or res['TribalMismatch'] == True or res['TribalProgramMismatch'] ==True:
+        currentchat.TribalResident = False
+    if    res['TribalFail'] == False and res['TribalMismatch'] == False and res['TribalProgramMismatch'] ==False and res['TribalVerified'] ==True:
+        currentchat.TribalResident = False
     if res['Status'] == "Success":
         return res
     else:
