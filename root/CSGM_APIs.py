@@ -104,9 +104,8 @@ def CheckDuplicateCustomer():
     }
 
 def FLOWCHART3(zipcode,email,chatid):
-    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchats = ChatTracker.objects.filter(chatid=chatid)
     currentchat = currentchats.first()
-    print("ResidenceState-->" + str(currentchat.ResidenceState))
     check = CheckAvailability_API(zipcode,email)
     if check:
         userConfiguration = UserConfiguration_API()
@@ -115,7 +114,7 @@ def FLOWCHART3(zipcode,email,chatid):
             if stateConfiguration:
                 startOrder = StartOrder_API(chatid)
                 if startOrder:
-                    if currentchat.ResidenceState=="CA":
+                    if currentchat.ResidenceState =="CA":
                         data = {
                             'ReservationUserCode' : userConfiguration['ReservationUserCode'],
                             'ReservationAgentCode' : userConfiguration['ReservationAgentCode'],
