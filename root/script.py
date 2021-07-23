@@ -105,10 +105,10 @@ def generateReply(chatid,incoming_message):
             elif response=='error_at_api2' or response=='error_at_api3' or response=='error_at_api4' :
                 currentchat.flowchart3_stucked_status=True
                 currentchat.save()
-                reply = "Oh no! Our system is having trouble with your application."
+                reply = "Oh no! Our system is having trouble with your application. : restart/[help]"
                 return reply
             else:
-                currentchat.init_message = 'STARTFLOWCHART4'
+                currentchat.init_message = 'ValidSSN'
                 currentchat.ReservationUserCode = response['ReservationUserCode']
                 currentchat.ReservationAgentCode = response['ReservationAgentCode']
                 currentchat.ReservationClientCode = response['ReservationClientCode']
@@ -125,17 +125,25 @@ def generateReply(chatid,incoming_message):
                 currentchat.save()
                 reply = f'http://localhost:8000/submit_info/{chatid}'
                 return reply
-
+        elif currentchat.init_message=="ValidSSN":
+             if len(incoming_message)==4 and str(incoming_message).isnumeric():
+                currentchat.init_message = "STARTFLOWCHART4"
+                currentchat.save()
+                reply = "The social security number is entered correctly"
+                return reply
+             else:
+                 reply = "Please enter the correct number - 4 digit numbers"   
+                 return reply
         elif currentchat.init_message == 'STARTFLOWCHART4':
             if currentchat.TribalEligible == True:
-                reply = "Do you reside on Federally-recognized Tribal lands?"
+                reply = "Do you reside on Federally-recognized Tribal lands? : yes/[no]"
                 currentchat.init_message = "TribalResident"   
                 currentchat.save()
                 return reply
             else:
                 currentchat.TribalResident = False
                 currentchat.init_message = "Confirm_information"
-                reply = "Confirm you entered your information correctly "
+                reply = "Do you confirm your entered information correctly again? : yes/[no]"
                 currentchat.save() 
                 return reply
         elif currentchat.init_message == "TribalResident":
@@ -146,10 +154,10 @@ def generateReply(chatid,incoming_message):
                 currentchat.TribalResident = False
                 currentchat.save() 
             else:
-                reply = "Please enter yes/[no]:"
+                reply = "Please enter : yes/[no]:"
                 return reply
             currentchat.init_message = "Confirm_information"
-            reply = "Confirm you entered your information correctly "
+            reply = "Do you confirm your entered information correctly again? : yes/[no]"
             currentchat.save() 
             return reply 
 
@@ -157,7 +165,7 @@ def generateReply(chatid,incoming_message):
             if 'yes' in incoming_message:
                 currentchat.init_message = "edit"
                 currentchat.save()
-                reply = "What would you like to edit?"
+                reply = "What would you like to edit? : Name/[DOB]/[Social Security]/[Address]"
                 return reply
             elif 'no' in incoming_message:
                 result = NationalVerification(currentchat.chatid)
@@ -165,7 +173,7 @@ def generateReply(chatid,incoming_message):
                     if currentchat.ResidenceState!="CA":
                         currentchat.init_message = "CGMChecks"
                         currentchat.save()
-                        return ("Please Enter to check the CGM")
+                        return ("CGM Checks...")
                     else:
                         reply = "FCRADISCLOSURETEXT :"+currentchat.FcraDisclosureText+"  FCRAADDITIONALDISCLOSURETEXT:"+currentchat.FcraAdditionalDisclossureText+"  FCRAACKNOWLEDGEMENT : "+currentchat.FcraAcknowledgement +"  Do you agee?/y:[n]" 
                         currentchat.init_message = "FCRATEXT"
@@ -178,11 +186,11 @@ def generateReply(chatid,incoming_message):
                         reply = "Your information did not pass out checks!"
                         return reply
                     elif "Validation error" in result['Message'] :
-                        reply = "Oh no! WE couldn't validate your information."+str(result['ValidationErrors']) +"Please correct the error"
+                        reply = "Oh no! WE couldn't validate your information."+str(result['ValidationErrors']) +"Please correct the error"+":Name/[DOB]/[Social Security]/[Address]"
                         return reply
-                else:
-                    reply = "Please enter yes/[no]"
-                    return reply        
+                # else:
+                #     reply = "Please enter yes/[no]"
+                #     return reply        
 
         elif currentchat.init_message == "edit":
             if "Name"  in incoming_message   or "DOB" in incoming_message:
@@ -201,12 +209,13 @@ def generateReply(chatid,incoming_message):
                 reply = "What are the last four digits of your social  security number?What are the last four  digits of your social security number?"
                 return reply
             else:
-                reply = "Choose item to edit/Name/DOB/Social Security/Address"
+                reply = "Choose item to edit : Name/[DOB]/[Social Security]/[Address]"
                 return reply
         elif currentchat.init_message == "edit_else_social":
             #validate the digit number later
              if len(incoming_message)==4 and str(incoming_message).isnumeric():
                 currentchat.init_message = "edit_else"
+                currentchat.last_four_social = incoming_message
                 currentchat.save()
                 reply = "The social security number is entered correctly"
                 return reply
@@ -214,7 +223,7 @@ def generateReply(chatid,incoming_message):
                  reply = "Please enter the correct number/ only 4 digit numbers"   
                  return reply
         elif currentchat.init_message == "edit_else":
-             reply = "Would you like to edit anything else?" 
+             reply = "Would you like to edit anything else? : yes/[no]" 
              currentchat.init_message = "edit_else_answer"
              currentchat.save()
              return reply
@@ -230,7 +239,7 @@ def generateReply(chatid,incoming_message):
                     if currentchat.ResidenceState!="CA":
                         currentchat.init_message = "CGMChecks"
                         currentchat.save()
-                        return ("Please Enter to check the CGM")
+                        return ("CGM Checks...")
                     else:
                         reply = "FCRADISCLOSURETEXT :"+currentchat.FcraDisclosureText+"  FCRAADDITIONALDISCLOSURETEXT:"+currentchat.FcraAdditionalDisclossureText+"  FCRAACKNOWLEDGEMENT : "+currentchat.FcraAcknowledgement +"  Do you agee?/y:[n]" 
                         currentchat.init_message = "FCRATEXT"
@@ -253,7 +262,7 @@ def generateReply(chatid,incoming_message):
             if "y" in incoming_message:
                     currentchat.init_message = "CGMChecks"
                     currentchat.save()
-                    return ("Please Enter to check the CGM")
+                    return ("CGM Checks...")
         #start the flowchat5            
         elif currentchat.init_message == "CGMChecks":
             response = FLOWCHAT5(chatid)
