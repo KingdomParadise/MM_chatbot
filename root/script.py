@@ -99,7 +99,7 @@ def generateReply(chatid,incoming_message):
         elif currentchat.init_message=='STARTFLOWCHART3':
             response = FLOWCHART3(currentchat.ResidenceZip,currentchat.email,currentchat.chatid)
             if response=='error_at_api1':
-                reply = f'Sorry! We currently do not offer any service plans for the ZIP CODE {currentchat.ResidentZip} area. Please try with other ZipCode.'
+                reply = f'Sorry! We currently do not offer any service plans for the ZIP CODE {currentchat.ResidenceZip} area. Please try with other ZipCode.'
                 CLEAR_ENTITY(currentchat)
                 return reply
             elif response=='error_at_api2' or response=='error_at_api3' or response=='error_at_api4' :
@@ -162,19 +162,27 @@ def generateReply(chatid,incoming_message):
             elif 'no' in incoming_message:
                 result = NationalVerification(currentchat.chatid)
                 if  result['Status'] == "Success":
-                    currentchat.init_message = "success_validNameAddress"
-                    currentchat.save()
-                    return("Success")
+                    if currentchat.ResidenceState!="CA":
+                        currentchat.init_message = "CGMChecks"
+                        currentchat.save()
+                        return ("Please Enter to check the CGM")
+                    else:
+                        reply = "FCRADISCLOSURETEXT :"+currentchat.FcraDisclosureText+"  FCRAADDITIONALDISCLOSURETEXT:"+currentchat.FcraAdditionalDisclossureText+"  FCRAACKNOWLEDGEMENT : "+currentchat.FcraAcknowledgement +"  Do you agee?/y:[n]" 
+                        currentchat.init_message = "FCRATEXT"
+                        currentchat.save()
+                        return reply
                 elif result['Status'] == "Failure":
                     currentchat.init_message = "edit"
+                    currentchat.save()
                     if "Invalid" in result['Message'] :
                         reply = "Your information did not pass out checks!"
-                        currentchat.save()
                         return reply
                     elif "Validation error" in result['Message'] :
                         reply = "Oh no! WE couldn't validate your information."+str(result['ValidationErrors']) +"Please correct the error"
-                        currentchat.save()
                         return reply
+                else:
+                    reply = "Please enter yes/[no]"
+                    return reply        
 
         elif currentchat.init_message == "edit":
             if "Name"  in incoming_message   or "DOB" in incoming_message:
@@ -261,7 +269,7 @@ def generateReply(chatid,incoming_message):
                 reply = "End Chat here!"
                 return reply
             elif response == "Pass":
-                if currentchat.State!="CA":
+                if currentchat.ResidenceState!="CA":
                     currentchat.init_message = "Lifeline"
                     currentchat.save()
                     reply = "Let's start Lisfeline"

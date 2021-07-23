@@ -51,11 +51,13 @@ def StateConfiguration_API(id):
                 'FcraDisclosureText' : res['FcraDisclosureText'],
                 'FcraAdditionalDisclosureText' : res['FcraAdditionalDisclosureText'],
                 'FcraAcknowledgement' : res['FcraAcknowledgement'],
+                'EligibiltyPrograms' : res['EligibiltyPrograms'][0]['Code']
             }
             return data
         else:
             data = {
                 'TribalEligible' : res['TribalEligible'],
+                'EligibiltyPrograms' : res['EligibiltyPrograms'][0]['Code']
             }
             return data
     else:
@@ -114,7 +116,7 @@ def FLOWCHART3(zipcode,email,chatid):
             if stateConfiguration:
                 startOrder = StartOrder_API(chatid)
                 if startOrder:
-                    if currentchat.ResidenceState == "CA":
+                    if currentchat.ResidenceState =="CA":
                         data = {
                             'ReservationUserCode' : userConfiguration['ReservationUserCode'],
                             'ReservationAgentCode' : userConfiguration['ReservationAgentCode'],
@@ -125,6 +127,8 @@ def FLOWCHART3(zipcode,email,chatid):
                             'FcraDisclosureText' : stateConfiguration['FcraDisclosureText'],
                             'FcraAdditionalDisclosureText' : stateConfiguration['FcraAdditionalDisclosureText'],
                             'FcraAcknowledgement' : stateConfiguration['FcraAcknowledgement'],
+                            'EligibiltyPrograms' : stateConfiguration['EligibiltyPrograms'],
+
 
                             'OrderNumber' : startOrder['OrderNumber'],
                             'PackageId' : startOrder['PackageId'],
@@ -139,6 +143,7 @@ def FLOWCHART3(zipcode,email,chatid):
                             'ReservationVendorCode' : userConfiguration['ReservationVendorCode'],
 
                             'TribalEligible' : stateConfiguration['TribalEligible'],
+                            'EligibiltyPrograms' : stateConfiguration['EligibiltyPrograms'],
 
                             'OrderNumber' : startOrder['OrderNumber'],
                             'PackageId' : startOrder['PackageId'],
@@ -181,6 +186,7 @@ def NationalVerification(id):
       #  'Token': 'd3a1b634-90a7-eb11-a963-005056a96ce9',
 
        # }
+    print(currentchat.date)
     data = {
         'FirstName': currentchat.first_name,
         'LastName': currentchat.last_name,
@@ -239,7 +245,7 @@ def Coverage_check(id):
  #       "ResidenceAddress01": "101 Vickery St",
         "ResidenceAddress01": currentchat.residential_address,
  #       "ResidenceAddress02": "",
-        "ResidenceCity": currentchat.ResideceCity,
+        "ResidenceCity": currentchat.ResidenceCity,
         "ResidenceState": currentchat.ResidenceState,
         "ResidenceZip": currentchat.ResidenceZip
         }

@@ -21,6 +21,8 @@ class ChatTracker(models.Model):
     FcraDisclosureText = models.CharField(max_length = 1000,default="",blank=True)
     FcraAdditionalDisclosureText = models.CharField(max_length = 1000,default="",blank=True)
     FcraAcknowledgement = models.CharField(max_length = 1000,default="",blank=True)
+    EligibiltyPrograms = models.CharField(max_length = 100,default = "",blank = True)
+
     #startorder API
     OrderNumber = models.CharField(max_length = 100,default=0,blank=True)
     PackageId = models.CharField(max_length=100,default = "",blank=True)

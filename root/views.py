@@ -11,7 +11,6 @@ def index(request):
         chatid = request.POST['chatid']
         message = request.POST['message']
 
-        # print(chatid)
         reply = generateReply(chatid, message)
         return JsonResponse({"message": reply})
 
@@ -71,7 +70,7 @@ def submit_info(request, id):
                 date = "11-"+day[1]+"-"+str(int(list[1]))
             elif day[0]=="Dec":
                 date = "12-"+day[1]+"-"+str(int(list[1]))    
-                  
+
             item.program = program_value
             item.first_name = first_name
             item.last_name = last_name
@@ -92,6 +91,6 @@ def submit_info(request, id):
             item.form_filled = True
             item.save()
             print('==>>  Form Filled')
-            print(item.date)
+
 
             return HttpResponse("<h1>Submitted :) </h1>")
