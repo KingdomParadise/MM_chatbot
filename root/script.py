@@ -128,6 +128,7 @@ def generateReply(chatid,incoming_message):
         elif currentchat.init_message=="ValidSSN":
              if len(incoming_message)==4 and str(incoming_message).isnumeric():
                 currentchat.init_message = "STARTFLOWCHART4"
+                currentchat.last_four_social = incoming_message
                 currentchat.save()
                 reply = "The social security number is entered correctly"
                 return reply
@@ -147,10 +148,10 @@ def generateReply(chatid,incoming_message):
                 currentchat.save() 
                 return reply
         elif currentchat.init_message == "TribalResident":
-            if 'yes' in incoming_message:
+            if 'yes' in incoming_message or 'y' in incoming_message:
                 currentchat.TribalResident = True
                 currentchat.save() 
-            elif 'no' in incoming_message:
+            elif 'no' in incoming_message or 'n' in incoming_message:
                 currentchat.TribalResident = False
                 currentchat.save() 
             else:
@@ -162,12 +163,13 @@ def generateReply(chatid,incoming_message):
             return reply 
 
         elif currentchat.init_message == "Confirm_information":   
-            if 'yes' in incoming_message:
+            if 'yes' in incoming_message or 'y' in incoming_message:
+
                 currentchat.init_message = "edit"
                 currentchat.save()
                 reply = "What would you like to edit? : Name/[DOB]/[Social Security]/[Address]"
                 return reply
-            elif 'no' in incoming_message:
+            elif 'no' in incoming_message or 'n' in incoming_message:
                 result = NationalVerification(currentchat.chatid)
                 if  result['Status'] == "Success":
                     if currentchat.ResidenceState!="CA":
@@ -206,7 +208,7 @@ def generateReply(chatid,incoming_message):
             elif "Social Security" in incoming_message:
                 currentchat.init_message = "edit_else_social"
                 currentchat.save()
-                reply = "What are the last four digits of your social  security number?What are the last four  digits of your social security number?"
+                reply = "What are the last four  digits of your social security number?"
                 return reply
             else:
                 reply = "Choose item to edit : Name/[DOB]/[Social Security]/[Address]"
@@ -228,12 +230,12 @@ def generateReply(chatid,incoming_message):
              currentchat.save()
              return reply
         elif currentchat.init_message == "edit_else_answer":
-            if 'yes' in incoming_message:
+            if 'yes' in incoming_message or 'y' in incoming_message:
                 currentchat.init_message = "edit"
                 currentchat.save()
                 reply = "What would you like to edit"
                 return reply       
-            elif 'no' in incoming_message:
+            elif 'no' in incoming_message or 'n' in incoming_message:
                 result = NationalVerification(currentchat.chatid)
                 if  result['Status'] == "Success":
                     if currentchat.ResidenceState!="CA":
