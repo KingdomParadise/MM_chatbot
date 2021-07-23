@@ -113,6 +113,7 @@ def generateReply(chatid,incoming_message):
                 currentchat.ReservationAgentCode = response['ReservationAgentCode']
                 currentchat.ReservationClientCode = response['ReservationClientCode']
                 currentchat.ReservationVendorCode = response['ReservationVendorCode']
+                currentchat.EligibiltyPrograms = response['EligibiltyPrograms']
                 currentchat.TribalEligible = response['TribalEligible']
                 currentchat.OrderNumber = response['OrderNumber']
                 currentchat.PackageId = response['PackageId']

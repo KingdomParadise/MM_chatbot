@@ -44,6 +44,7 @@ def StateConfiguration_API(id):
     print("ResidenceState-->" + str(currentchat.ResidenceState))
 
     res = requests.post(state_configuration_url,data={'Token':token,'state':currentchat.ResidenceState}).json()
+    print(res['EligibiltyPrograms'][0]['Code'])
     if res['Status']=='Success':
         if currentchat.ResidenceState == "CA":
             data = {
@@ -203,6 +204,8 @@ def NationalVerification(id):
         'ClientCode' : currentchat.ReservationClientCode,
         'UserCode' : currentchat.ReservationUserCode,
         }
+    print(currentchat.EligibiltyPrograms)
+
     res = requests.post(validate_name_address,data=data).json()
     return  res  
 #Flowchat5
@@ -250,10 +253,10 @@ def Coverage_check(id):
         "ResidenceZip": currentchat.ResidenceZip
         }
     res = requests.post(coverage_check,data=data).json()
-    if res['TribalFail'] == True or res['TribalMismatch'] == True or res['TribalProgramMismatch'] ==True:
-        currentchat.TribalResident = False
-    if    res['TribalFail'] == False and res['TribalMismatch'] == False and res['TribalProgramMismatch'] ==False and res['TribalVerified'] ==True:
-        currentchat.TribalResident = False
+    #if res['TribalFail'] == True or res['TribalMismatch'] == True or res['TribalProgramMismatch'] ==True:
+    #    currentchat.TribalResident = False
+    #if    res['TribalFail'] == False and res['TribalMismatch'] == False and res['TribalProgramMismatch'] ==False and res['TribalVerified'] ==True:
+    #    currentchat.TribalResident = False
     if res['Status'] == "Success":
         return res
     else:
