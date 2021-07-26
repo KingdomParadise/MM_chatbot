@@ -123,7 +123,7 @@ def EDIT_Info(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     if 'yes' in incoming_message:
-        reply = ["What would you like to edit?","FirstName", "MiddleName", "LastName","Suffix","DateOfBirth","Socical Security Number","ResidenceAddress","Apt","ResidenceCity","State","ZipCode"]
+        reply = ["What would you like to edit?","FirstName", "MiddleName", "LastName","Suffix","Date Of Birth","Socical Security Number","ResidenceAddress","Apt","ResidenceCity","State","ZipCode"]
         currentchat.init_message = "edit_item"
         currentchat.save()
         return reply
@@ -154,6 +154,9 @@ def EDIT_Info_item(incoming_message,id):
     currentchat.init_message = "save_item"
     currentchat.variable_state = incoming_message
     currentchat.save()
+    if incoming_message=="DateOfBirth":
+        return ["Please Enter the Date Of Birth again : MM-DD-YYYY","normal"]
+
     return ["Please Enter the "+ incoming_message + " again","normal"]
 
 def SAVE_Info(incoming_message,id):

@@ -130,7 +130,7 @@ def Coverage_check(id):
         currentchat.TribalResident = False
     if  res['TribalFail'] == False and res['TribalMismatch'] == False and res['TribalProgramMismatch'] ==False:
         if  "TribalVerified" in res.keys():
-            if res['Tribal Verified'] == True:
+            if res['TribalVerified'] == True:
                 currentchat.TribalResident = False
 
     if res['Status'] == "Success":
