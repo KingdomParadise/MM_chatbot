@@ -35,6 +35,7 @@ def ZIPCODE_FINDER(chatid,message):
             url = f"https://maps.googleapis.com/maps/api/geocode/json?address={keyword}&key=AIzaSyAJGToD7umZ-VdfAl95vSnd1AlxVxt9lUI"
             response = requests.get(url)
             if  response.json()['status']=='OK':
+                currentchat.init_message = "Get_email"
                 zipcode=keyword
                 currentchat.ResidenceZip = zipcode
                 currentchat.ResidenceCity = response.json()['results'][0]['address_components'][1]['short_name']
@@ -56,12 +57,16 @@ def EMAIL_FINDER(chatid,message):
         response = requests.get("https://isitarealemail.com/api/email/validate",params = {'email': email})
         status = response.json()['status']
         if status=='valid':
+            print("-->email verified")
             currentchat.email = email
             currentchat.save()
             currentchat.init_message = "STARTFLOWCHART3"
             currentchat.save()
             return ["Thank You! This will just take a few seconds You are on your way to a FREE phone!📱","normal_autoPass"]
+        else:
+            return  ["That email address was not valid. Please enter a working email address. (Ex: example@mail.com)","normal"]
     elif len(email)==0:
+        print("emial-->not verified")
         return  ["That email address was not valid. Please enter a working email address. (Ex: example@mail.com)","normal"]
      
 def GET_FLOWCHAT_STATE(incoming_message,id):
@@ -69,10 +74,15 @@ def GET_FLOWCHAT_STATE(incoming_message,id):
     currentchat = currentchats.first()
     if 'restart' in incoming_message:
         currentchat.flowchart3_stucked_status = False
+        currentchat.ResidenceZip = ""
+        currentchat.init_message = "init"
         currentchat.save()
         return ['Please enter a valid ZipCode.','normal']
     elif 'help' in incoming_message :
         currentchat.flowchart3_stucked_status = False
+        currentchat.ResidenceZip = ""
+        currentchat.init_message = "init"
+        currentchat.save()
         return ['An agent will reach out shortly! Thank you for your patience.','normal']
        
 def STARTFLOWCHAT4(id):

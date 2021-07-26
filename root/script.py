@@ -43,7 +43,7 @@ def generateReply(chatid,incoming_message):
     elif currentchat.init_message !='':
         if currentchat.ResidenceZip=='':
             return   ZIPCODE_FINDER(chatid,incoming_message)
-        elif len(str(currentchat.ResidenceZip))==5 and currentchat.email=='':
+        elif currentchat.init_message =="Get_email":
            return  EMAIL_FINDER(chatid,incoming_message)  
         elif currentchat.flowchart3_stucked_status is True:
             incoming_message = incoming_message.lower()
