@@ -1,4 +1,5 @@
 import requests
+<<<<<<< HEAD
 check_avaliability_url = 'https://lifeline.cgmllc.net/api/v2/checkavailability'
 user_confituration_url = 'https://lifeline.cgmllc.net/api/v2/userconfiguration'
 state_configuration_url = 'https://lifeline.cgmllc.net/api/v2/stateconfiguration'
@@ -15,11 +16,21 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PROJECT.settings')
 django.setup()
 from root.models import ChatTracker
 
+=======
+check_avaliability_url = 'https://lifeline.cgmllc.net/api/v2/CheckAvailability'
+user_confituration_url = 'https://lifeline.cgmllc.net/api/v2/UserConfiguration'
+state_configuration_url = 'https://lifeline.cgmllc.net/api/v2/StateConfiguration'
+start_order_url = 'https://lifeline.cgmllc.net/api/v2/StateConfiguration'
+
+token='d3a1b634-90a7-eb11-a963-005056a96ce9'
+
+>>>>>>> mashood_updated_branch
 
 def CheckAvailability_API(zipcode,email):
     print('-->> Calling CheckAvailability_API')
     res = requests.post(check_avaliability_url, data={'Token':token,'ZipCode':zipcode,'Email':email}).json()
     if res['Status']=='Success':
+<<<<<<< HEAD
         return res
     else:  
         return None
@@ -39,11 +50,37 @@ def StateConfiguration_API(id):
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     res = requests.post(state_configuration_url,data={'Token':token,'state':currentchat.ResidenceState}).json()
+=======
+        print(res)
+        return res
+        
+    else:  
+        return None
+
+
+
+
+def UserConfiguration_API():
+    print('-->> Calling UserConfiguration_API')
+    res = requests.post(user_confituration_url,data={'Token':token}).json()
+    print(res)
+    if res['Status']=='Success':
+            return res
+    else:
+        return None
+
+def StateConfiguration_API():
+    print('-->> Calling StateConfiguration_API')
+    res = requests.post(state_configuration_url,data={'Token':token,'state':'GA'}).json()
+    print(res)
+    # print(res['TribalEligible'])
+>>>>>>> mashood_updated_branch
     if res['Status']=='Success':
         return res
     else:
         return None
 
+<<<<<<< HEAD
 def StartOrder_API(id):
     print('-->> Calling StartOrder_API')
     currentchats = ChatTracker.objects.filter(chatid=id)
@@ -52,19 +89,33 @@ def StartOrder_API(id):
     data = {
         'Token':token,
         'State':currentchat.ResidenceState,
+=======
+
+
+def StartOrder_API():
+    print('-->> Calling StartOrder_API')
+    data = {
+        'Token':token,
+        'State':'GA',
+>>>>>>> mashood_updated_branch
         'AppVersion':'89.0.4389.72',
         'Platform':'WebApp',
         'SerialNumber':'www.zapier.com',
         'SaleTypeid':3
         }
     res = requests.post(start_order_url,data=data).json()
+<<<<<<< HEAD
     
+=======
+    print(res)
+>>>>>>> mashood_updated_branch
     if res['Status']=='Success':
         return res
     else:
         return None
 
 
+<<<<<<< HEAD
 
    
 def NationalVerification(id):
@@ -175,8 +226,37 @@ def FLOWCHAT5(id):
                 return reply  
     reply = "error"    
     return reply
+=======
+def FLOWCHART3(zipcode,email):
+    if CheckAvailability_API(zipcode,email):
+        if UserConfiguration_API():
+            if StateConfiguration_API():
+                if StartOrder_API():
+                    print('==>>>>  All API Layers PASSED')
+                    return'send_link'
+                else:
+                    print('** API_1 FAILED :(')
+                    return 'error_at_api4'
+
+            else:
+                print('** API_1 FAILED :(')
+                return 'error_at_api3'
+        else:
+            print('** API_1 FAILED :(')
+            return 'error_at_api2'
+    else:
+        print('** API_1 FAILED :(')
+        return 'error_at_api1'
+
+
+>>>>>>> mashood_updated_branch
 
 if __name__ == '__main__':
     email='denea1288@gmail.com'
     email='denea128822@gmail.com'
+<<<<<<< HEAD
     zipcode=30314
+=======
+    zipcode=30314
+    print(FLOWCHART3(zipcode,email))
+>>>>>>> mashood_updated_branch

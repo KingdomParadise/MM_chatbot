@@ -1,6 +1,7 @@
 from django.db import models 
 
 class ChatTracker(models.Model): 
+<<<<<<< HEAD
     chatid = models.CharField(max_length=5000,default="", blank=True) 
     init_message = models.CharField(max_length=5000,default="", blank=True,)
     variable_state = models.CharField(max_length=5000,default="", blank=True)
@@ -30,6 +31,22 @@ class ChatTracker(models.Model):
     #user define
     TribalResident = models.BooleanField(default=False)
     #users input
+=======
+    chatid = models.CharField(max_length=5000,default="", blank=True,) 
+    init_message = models.CharField(max_length=5000,default="", blank=True,)
+    zipcode = models.CharField(max_length=100,default="", blank=True)     
+    email = models.CharField(max_length=100,default="", blank=True)
+    
+    flowchart3_stucked_status = models.BooleanField(default=False)
+      
+
+    ReservationUserCode = models.CharField(max_length=100,default="", blank=True)
+    ReservationClientCode = models.CharField(max_length=100,default="", blank=True)
+    ReservationVendorCode = models.CharField(max_length=100,default="", blank=True)
+    TribalEligible = models.CharField(max_length=100,default="", blank=True)
+    
+    
+>>>>>>> mashood_updated_branch
     program = models.CharField(max_length=100,default="", blank=True)
     first_name = models.CharField(max_length=100,default="", blank=True)
     middle_name = models.CharField(max_length=100,default="", blank=True)

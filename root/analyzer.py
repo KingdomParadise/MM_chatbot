@@ -55,6 +55,7 @@ def EMAIL_FINDER(chatid,message):
         email = email[0]
         response = requests.get("https://isitarealemail.com/api/email/validate",params = {'email': email})
         status = response.json()['status']
+        print("==>> status", status)
         if status=='valid':
             currentchat.email = email
             currentchat.save()
