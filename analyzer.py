@@ -1,6 +1,6 @@
 import re,requests 
 from root.models import ChatTracker
-from CSGM_APIs import FLOWCHAT5,ConfirmState, NationalVerification
+from CSGM_APIs import *
 def INIT_MESSAGE_HANDLER(message):
     message = str(message).lower()
     possible_keywords = ['hello','hola','hi','hey','helo']
@@ -226,13 +226,68 @@ def CGMChecks(id):
         if currentchat.ResidenceState!="CA":
             currentchat.init_message = "Lifeline"
             currentchat.save()
-            return ["Let's start Lisfeline",'normal']
+            return ["Let's start Lisfeline",'normal_autoPass']
         elif ConfirmState(id):
             currentchat.init_message = "Lifeline"
             currentchat.save()
-            return ["Let's start Lisfeline",'normal']
+            return ["Let's start Lisfeline",'normal_autoPass']
         else:
             currentchat.init_message = "ConfirmError"
             currentchat.save()
             return ["Oh no! Our system is having trouble with your request",'normal']
-             
+
+def Lifeline_state(response,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    if response['Status'] == "Success":
+        currentchat.init_message = "lifeline_success"
+        currentchat.save()
+        return ["You qualify for [INSERT PLAN] {Repeat for total Number of PLans}","normal_autoPass"]   
+    else:
+        currentchat.init_message = "lifeline_failure"
+        currentchat.save()
+        return["Oh no! We could not find any plans that you qualify for.","normal_help"]              
+
+def lifeline_success(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    #if currentchat.ResidenceState=="CA":
+    currentchat.init_message = "setLanguageEs"
+    currentchat.save()
+    return ["What language do you prefer to speak? 😊","normal_language_ES"]
+
+def setLanguageEs(id,incoming_message):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first() 
+    if  incoming_message == "English" or incoming_message == "Spanish":
+        currentchat.language  = incoming_message
+        currentchat.init_message = "check_status_lifeline"
+        currentchat.save()
+        return ["Do you prefer statmdard pring, or LARGE PRINT ontifications?","Contact Access Wireless Customer Service directly if you would like to receive future communications from  the California LifeLine Administrator in Braille.","normal_check"]
+    elif incoming_message== "more languages":
+        currentchat.init_message = "setLanguageCk"
+        currentchat.save()
+        return ["What language do you prefer to speak? 😊","normal_language_CK"]  
+
+def setLanguageCK(id,incoming_message):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()        
+    if  incoming_message == "Chinese" or incoming_message == "Korean":
+        currentchat.language  = incoming_message
+        currentchat.init_message = "check_status_lifeline"
+        currentchat.save()
+        return ["Do you prefer statmdard pring, or LARGE PRINT ontifications?","Contact Access Wireless Customer Service directly if you would like to receive future communications from  the California LifeLine Administrator in Braille.","normal_check"]
+    elif incoming_message== "more languages":
+        currentchat.init_message = "setLanguageJv"
+        currentchat.save()
+        return ["What language do you prefer to speak? 😊","normal_language_JV"]       
+
+def setLanguageJv(id,incoming_message):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first() 
+    if  incoming_message == "Japanese" or incoming_message == "Vietnames":
+        currentchat.language  = incoming_message
+        currentchat.init_message = "check_status_lifeline"
+        currentchat.save()
+        return ["Do you prefer statmdard pring, or LARGE PRINT ontifications?","Contact Access Wireless Customer Service directly if you would like to receive future communications from  the California LifeLine Administrator in Braille.","normal_check"]        
+        

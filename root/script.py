@@ -1,11 +1,11 @@
 #from django.db.models.enums import IntegerChoices
-from root.analyzer import CGMChecks, EDIT_Info, EDIT_Info_item, FCRATEXT, GET_FLOWCHAT_STATE, SAVE_Info, SET_ConfirmInfo, SET_TribalResident, STARTFLOWCHAT4
+from root.analyzer import CGMChecks, EDIT_Info, EDIT_Info_item, FCRATEXT, GET_FLOWCHAT_STATE, SAVE_Info, SET_ConfirmInfo, SET_TribalResident, STARTFLOWCHAT4, setLanguageEs , setLanguageJv ,setLanguageCK 
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time,os,uuid,json,re,sched, timeit,django  
 from analyzer import *
-from CSGM_APIs import CheckAvailability_API,UserConfiguration_API,StateConfiguration_API,StartOrder_API,FLOWCHAT5,ConfirmState
+from CSGM_APIs import CheckAvailability_API, UserConfiguration_API, StateConfiguration_API, StartOrder_API, Lifeline_API, CheckNVApplicationStatus_API,CheckNladEbbApplicationStatus_API
 
 
 
@@ -116,7 +116,29 @@ def generateReply(chatid,incoming_message):
         elif currentchat.init_message == "help":
             if "help" in incoming_message:
                 reply = ["An agent will  reach out  shortly!","normal"]
-                return reply             
+                return reply  
+        elif currentchat.init_message == "Lifeline":
+            response = Lifeline_API(chatid)
+            return Lifeline_state(response,chatid)      
+        elif currentchat.init_message=="lifeline_success":
+            return lifeline_success(chatid)
+        elif currentchat.init_message == "setLanguageEs":
+            return setLanguageEs(chatid,incoming_message)
+        elif currentchat.init_message == "setLanguageCk":
+            return setLanguageCK(chatid,incoming_message)
+        elif currentchat.init_message == "setLanguageJv":
+            return setLanguageJv(chatid,incoming_message)
+        elif currentchat.init_message == "lifeline_failure":
+            currentchat.init_message = "agent_help"
+            currentchat.save()
+            return ["An agent will reach out shortly! Thank you for your patience.","normal_help"]  
+        elif  currentchat.init_message == "check_status_lifeline":
+                if currentchat.ResidenceChat=="CA":
+                    response = CheckNladEbbApplicationStatus_API() 
+                    return          
+                else:
+                    response = CheckNVApplicationStatus_API()
+                    return          
 
 
                         

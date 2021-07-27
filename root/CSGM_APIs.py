@@ -6,7 +6,8 @@ start_order_url = 'https://lifeline.cgmllc.net/api/v2/startorder'
 validate_name_address = ' https://lifeline.cgmllc.net/api/v2/validatenameaddress'
 check_duplicate_customer ='https://lifeline.cgmllc.net/api/v2/checkduplicatecustomer'
 coverage_check =  'https://lifeline.cgmllc.net/api/v2/coveragecheck'
-confirm_state = 'https://lifeline.cgmllc.net/api/v2/confirmstateeligibility '
+confirm_state = 'https://lifeline.cgmllc.net/api/v2/confirmstateeligibility'
+life_line_url = "https://lifeline.cgmllc.net/api/v2/lifelineplans"
 
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
 
@@ -176,6 +177,22 @@ def FLOWCHAT5(id):
     reply = "error"    
     return reply
 
+def Lifeline_API(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data = {
+        "Token":"d3a1b634-90a7-eb11-a963-005056a96ce9",
+        "PackageID" : currentchat.PackageId,
+        "State" : currentchat.ResidenceState,
+        "Zip" : currentchat.ResidenceZip,
+        "Tribal" : currentchat.TribalResident
+    }
+    res = requests.post(life_line_url,data=data).json()
+    return res
+def CheckNladEbbApplicationStatus_API(): 
+    return
+def CheckNVApplicationStatus_API():
+    return    
 if __name__ == '__main__':
     email='denea1288@gmail.com'
     email='denea128822@gmail.com'
