@@ -345,14 +345,14 @@ def Disclosure(id):
 def iehBool(id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
-    #if currentchat.iehBool==True:
-    currentchat.init_message = "lifelineService"
-    currentchat.save()
-    return ["Does your spouse or domestic partner live with you AND already receive LifeLine phone service? Select NO if you do not have a spouse or partner. Select NO if your spouse or partner does not live with you. Select NO if your spouse or partner does not receive lifeline phone service?","normal_yes_no"]   
-    #else:
-    #    currentchat.init_message="submitorder"
-    #    currentchat.save()
-    #    return["SubmitOrder","normal"]     
+    if currentchat.iehBool==True:
+        currentchat.init_message = "lifelineService"
+        currentchat.save()
+        return ["Does your spouse or domestic partner live with you AND already receive LifeLine phone service? Select NO if you do not have a spouse or partner. Select NO if your spouse or partner does not live with you. Select NO if your spouse or partner does not receive lifeline phone service?","normal_yes_no"]   
+    else:
+        currentchat.init_message="submitorder"
+        currentchat.save()
+        return["SubmitOrder","normal"]     
 def lifelineService(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
@@ -403,3 +403,9 @@ def beforeShare(incoming_message,id):
     currentchat.init_message = "share_living_expenses"
     currentchat.save()  
     return["Do you share living expenses (bills, food, etc.) and share income (either your income, their income, or both incomes together) with the adult you listed above? 🏠💵","normal_yes_no"]
+def getProgram(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    if currentchat.EligibiltyPrograms == True:
+
+        return ["To continue we'll need to verify some of your income information💲","normal_autoPass"]

@@ -150,8 +150,8 @@ def generateReply(chatid,incoming_message):
             return shareliving_expenses(incoming_message,chatid)   
         elif currentchat.init_message=="before_share_living_expenses":
             return beforeShare(incoming_message,chatid)
-        elif currentchat.init_message=="submitorder":
-            return["SubmitOrder","normal"]   
+        elif currentchat.init_message=="SubmitOrder":
+            return getProgram(chatid) 
 
 
  
