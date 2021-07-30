@@ -1,4 +1,5 @@
 import requests
+from requests.api import request
 check_avaliability_url = 'https://lifeline.cgmllc.net/api/v2/checkavailability'
 user_confituration_url = 'https://lifeline.cgmllc.net/api/v2/userconfiguration'
 state_configuration_url = 'https://lifeline.cgmllc.net/api/v2/stateconfiguration'
@@ -8,6 +9,8 @@ check_duplicate_customer ='https://lifeline.cgmllc.net/api/v2/checkduplicatecust
 coverage_check =  'https://lifeline.cgmllc.net/api/v2/coveragecheck'
 confirm_state = 'https://lifeline.cgmllc.net/api/v2/confirmstateeligibility'
 life_line_url = "https://lifeline.cgmllc.net/api/v2/lifelineplans"
+Check_NVApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNVApplicaitonstatus"
+Check_NladEbbApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNladEbbApplicationstatus"
 
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
 
@@ -107,7 +110,6 @@ def Check_dulicate_customer(id):
         "ResidenceZip": currentchat.ResidenceZip
     }   
     res = requests.post(check_duplicate_customer,data=data).json()
-    print(res)
     if res['Status'] == "Success":
         return res
     else:
@@ -126,7 +128,6 @@ def Coverage_check(id):
         "ResidenceZip": currentchat.ResidenceZip
         }
     res = requests.post(coverage_check,data=data).json()
-    print(res)
     if res['TribalFail'] == True or res['TribalMismatch'] == True or res['TribalProgramMismatch'] ==True:
         currentchat.TribalResident = False
     if  res['TribalFail'] == False and res['TribalMismatch'] == False and res['TribalProgramMismatch'] ==False:
@@ -158,7 +159,6 @@ def ConfirmState(id):
         "Program":currentchat.program
     }
     res = requests.post(confirm_state,data=data).json()
-    print(res)
     if res['Status'] == "Success":
         return res
     else:
@@ -189,10 +189,47 @@ def Lifeline_API(id):
     }
     res = requests.post(life_line_url,data=data).json()
     return res
-def CheckNladEbbApplicationStatus_API(): 
-    return
-def CheckNVApplicationStatus_API():
-    return    
+def CheckNladEbbApplicationStatus_API(id):
+    print("-->checknladebapplication")
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data = {
+        "Token":"d3a1b634-90a7-eb11-a963-005056a96ce9",
+        "PackageID" : currentchat.PackageId,
+        "SSN" : currentchat.last_four_social,
+        "FirstName" : currentchat.first_name,
+        "LastName" : currentchat.last_name,
+        "DOB" : currentchat.date,
+        "PrimaryAddress1" :currentchat.residential_address,
+        "PrimaryCity" : currentchat.ResidenceCity,
+        "PrimaryState": currentchat.ResidenceState,
+        "PrimaryZip" : currentchat.ResidenceZip,
+        "Tribal" : currentchat.TribalResident,
+    }
+    res = requests.post(Check_NladEbbApplication_Status_url,data = data).json()
+    print(res)
+    return res
+def CheckNVApplicationStatus_API(id):
+    print("-->checkknvapplication")
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data = {
+        "Token":"d3a1b634-90a7-eb11-a963-005056a96ce9",
+        "PackageID" : currentchat.PackageId,
+        "SSN" : currentchat.last_four_social,
+        "FirstName" : currentchat.first_name,
+        "LastName" : currentchat.last_name,
+        "DOB" : currentchat.date,
+        "PrimaryAddress1" :currentchat.residential_address,
+        "PrimaryCity" : currentchat.ResidenceCity,
+        "PrimaryState": currentchat.ResidenceState,
+        "PrimaryZip" : currentchat.ResidenceZip,
+        "Tribal" : currentchat.TribalResident,
+    }
+    print(data)
+    res = requests.post(Check_NVApplication_Status_url,data = data).json()
+    print(res)
+    return   res  
 if __name__ == '__main__':
     email='denea1288@gmail.com'
     email='denea128822@gmail.com'

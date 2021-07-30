@@ -1,9 +1,13 @@
 from django.http.response import JsonResponse
 from django.shortcuts import render, redirect, HttpResponse
+from django.template.context_processors import csrf
 from django.views.decorators.csrf import csrf_exempt
-from .models import ChatTracker
-from .script import generateReply
+from django.views.decorators.clickjacking import xframe_options_exempt
 
+from .models import ChatTracker,Sequence
+from .script import generateReply
+import  requests
+import json
 
 @csrf_exempt
 def index(request):
@@ -94,3 +98,102 @@ def submit_info(request, id):
 
 
             return HttpResponse("<h1>Submitted :) </h1>")
+
+@csrf_exempt
+@xframe_options_exempt
+def submit_form(request):
+    """
+    Send request to Zapier and clear database
+    """
+    if request.method == "POST":
+        user_id = request.POST['user_id']  # Save User ID
+        user = ChatTracker.objects.get(chatid=user_id)  # Find user by ID
+        url = "https://hooks.zapier.com/hooks/catch/" + str(user.zap_acct) + "/" + str(user.zap_name) + "/"  # Create Zapier URL
+        payload = {
+            "user_id": str(request.POST['user_id']),
+            "ieh": user.iehBool
+        }
+        response = requests.post(url,data=payload)  # Make Request
+
+        for index in range(0, int(user.sequence_count)):  # Count all sequences in database
+            sequence = Sequence.objects.get(sequence_id=str(user_id)+str(index))
+            sequence.delete()  # Clear
+
+        #user.delete()  # Clear User
+
+        return render(request, "root/thanks.html")
+@csrf_exempt
+@xframe_options_exempt
+def disclosure(request, user_id):
+    """
+    Render the disclosures HTML page
+    """
+    user = ChatTracker.objects.get(chatid=user_id)  # Get user by ID
+
+    payload = {  # Form request data
+        'Token': user.token,
+        'PackageID': user.PackageId,
+        'ResidenceState': user.ResidenceState,
+        'TribalResident': user.TribalResident,
+        'EligibilityProgram': user.EligibiltyPrograms
+    }
+    response = requests.post(
+        "https://lifeline.cgmllc.net/api/v2/disclosuresconfiguration",headers={"Content-Type": "application/x-www-form-urlencoded"},data=payload)
+    response_json = response.json()
+    sequence_count = 0
+    sequence_list = []
+    for key in response_json['DisclosureItems']:
+        sequence_count += 1
+        sequence = Sequence(sequence_id=str(user_id)+str(key['Sequence']))  # Create record
+        sequence.save()  # Save record
+
+        sequence.type = key['Type']  # Update record fields
+        sequence.text = key['Message']
+        sequence.save()  # Save record
+
+        sequence_list.append(sequence)  # Compile all sequences
+
+    user.sequence_count = sequence_count
+    #user.ieh = str(response_json['CaptureIehForm']).lower()  # Update User fields
+    user.ieh = str(response_json['CaptureIehForm'])  # Update User fields
+    print(user.ieh)
+    user.save()
+
+    context = {
+        "sequences": sequence_list,
+        "user_id": user_id
+    }
+
+    return render(request, "root/start.html", context)
+
+
+@csrf_exempt
+def post_entry(request):
+    """
+    Receive a POST request and create a new record for the User model using the request data
+    """
+    if request.method == 'POST':
+        user_id = request.POST['user_id']  # Get Data
+        token = request.POST['token']
+        package_id = request.POST['package_id']
+        state = request.POST['state']
+        benefit_code = request.POST['benefit_code']
+        tribal = request.POST['tribal']
+        zap_acct = request.POST['zapAcct']
+        zap_name = request.POST['zapName']
+
+        user = ChatTracker(chatid=user_id)  # Create record
+        user.save()  # Save record
+
+        user.token = token  # Update record fields
+        user.PackageId = package_id
+        user.ResidenceState = state
+        user.TribalResident = tribal
+        user.benefit_code = benefit_code
+        user.zap_acct = zap_acct
+        user.zap_name = zap_name
+        user.save()  # Save record
+
+        return HttpResponse({'Status': 200})  # Return success response
+    else:
+        return HttpResponse({'Status': 403})  # Return forbidden response

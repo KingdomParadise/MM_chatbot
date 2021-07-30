@@ -242,7 +242,14 @@ def Lifeline_state(response,id):
     if response['Status'] == "Success":
         currentchat.init_message = "lifeline_success"
         currentchat.save()
-        return ["You qualify for [INSERT PLAN] {Repeat for total Number of PLans}","normal_autoPass"]   
+        plan = ["You quality for"]
+        for i in range(0,len(response['LifelinePlans'])):
+            mid = ""
+            for key in response['LifelinePlans'][i].keys():
+                mid+=(key+"-->"+str(response['LifelinePlans'][i][key])+" : ")
+            plan.append(mid)
+        
+        return [plan,"LifelinePlans","normal_autoPass"]
     else:
         currentchat.init_message = "lifeline_failure"
         currentchat.save()
@@ -251,10 +258,14 @@ def Lifeline_state(response,id):
 def lifeline_success(id):
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
-    #if currentchat.ResidenceState=="CA":
-    currentchat.init_message = "setLanguageEs"
-    currentchat.save()
-    return ["What language do you prefer to speak? 😊", "normal_language_ES"]
+    if currentchat.ResidenceState=="CA":
+        currentchat.init_message = "setLanguageEs"
+        currentchat.save()
+        return ["What language do you prefer to speak? 😊", "normal_language_ES"]
+    else:
+        currentchat.init_message = "check_status_lifeline"
+        currentchat.save()  
+        return ["Track ApplicationStatus...","normal_autoPass"] 
 
 def setLanguageEs(id,incoming_message):
     currentchats = ChatTracker.objects.filter(chatid=id)
@@ -290,4 +301,105 @@ def setLanguageJv(id,incoming_message):
         currentchat.init_message = "check_status_lifeline"
         currentchat.save()
         return ["Do you prefer statmdard pring, or LARGE PRINT ontifications?","Contact Access Wireless Customer Service directly if you would like to receive future communications from  the California LifeLine Administrator in Braille.","normal_check"]        
-        
+def Check_Status_Lifeline(response,id):
+    print(response)
+    print(response.keys())
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+    if "ApplicationStatus" in response.keys():
+        if response['ApplicationStatus'] == "ApplicationPending":
+            currentchat.init_message = "check_status_lifeline"
+            currentchat.save()
+            return["Your application is still being processed by the National verifier! Click here to check its status.","normal_check"]
+        elif response['ApplicationStatus'] == "ApplicationNotComplete" or response['ApplicationStatus'] == "ApplicationNotFound":
+            currentchat.init_message = "DisclosuresConfiguration"
+            currentchat.save()
+            return["DisclosuresConfiguration","normal_autoPass"]   
+        else:  
+            currentchat.init_message = "DuplicateSubscriber"
+            currentchat.save()
+            return["We noticed that you are already receiving a  Lifeline benefit from another provider. Would you like to transfer your service provider to Access Wireless? 😊","normal_yes_no"]        
+    else:
+            currentchat.init_message = "DisclosuresConfiguration"
+            currentchat.save()
+            return["DisclosuresConfiguration","normal_autoPass"] 
+
+def DuplicateSubscriber(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+    if "yes" in incoming_message:
+        currentchat.init_message="DisclosuresConfiguration"
+        currentchat.save()
+        return ["Great! We're glad to have you 😍","normal_autoPass"]    
+    elif "no" in incoming_message:
+        currentchat.init_message="EndChat"
+        currentchat.save()
+        return["😥 We're sad to see you go!","normal"]
+def Disclosure(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    currentchat.init_message="iehBool"
+    currentchat.save()
+    return [f'http://localhost:8000/start/{id}','url']
+
+def iehBool(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    if currentchat.iehBool==True:
+        currentchat.init_message = "lifelineService"
+        currentchat.save()
+        return ["Does your spouse or domestic partner live with you AND already receive LifeLine phone service? Select NO if you do not have a spouse or partner. Select NO if your spouse or partner does not live with you. Select NO if your spouse or partner does not receive lifeline phone service?","normal_yes_no"]   
+    else:
+        currentchat.init_message="submitorder"
+        currentchat.save()
+        return["SubmitOrder","normal"]     
+def lifelineService(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    if "yes" in incoming_message:
+        currentchat.init_message="EndDisclosuresConfiguration"
+        currentchat.save()
+        return["I'm Sorry 😥 You do not qualify to apply for Lifeline because someone in your household already gets the benefit. Each household is allowed to get only ONE Lifeline.","normal"]      
+    else:
+        currentchat.islifeline_service="No"
+        currentchat.init_message = "otherAdult"
+        currentchat.save()
+        options = ["Other than a spouse or partner, do other adults (people over the age of 18 or emancipated minors) live with you at your address? If so, are they your:","Parent","Child(+18)","Other Adult Relative","Adult Rommate","Other Adult","No Adult"]
+        return[options,"otherAdult","normal"]
+
+def otherAdult(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+
+    if incoming_message=="OtherAdult":
+        currentchat.init_message = "before_share_living_expenses"
+        currentchat.save()   
+        return["Please specify:What is their relationship to you?","normal"]     
+    elif incoming_message=="NoAdult":
+        currentchat.init_message = "submitorder"
+        currentchat.save() 
+        return["YES! You qualify to apply for Lifeline! 🎉😁🎉","normal_autoPass"]    
+    else:
+        currentchat.other_adult = incoming_message
+        currentchat.init_message = "share_living_expenses"
+        currentchat.save()  
+        return["Do you share living expenses (bills, food, etc.) and share income (either your income, their income, or both incomes together) with the adult you listed above? 🏠💵","normal_yes_no"]     
+
+def shareliving_expenses(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    if "yes" in incoming_message:
+        currentchat.init_message = "EndDisclosuresConfiguration"
+        currentchat.save()  
+        return["I'm Sorry 😥 You do not qualify to apply for Lifeline because someone in your household already gets the benefit.Each household is allowed to get only ONE Lifeline.","normal"]
+    elif "no" in incoming_message:
+        currentchat.init_message = "submitorder"
+        currentchat.save() 
+        return["YES! You qualify to apply for Lifeline! 🎉😁🎉","normal_autoPass"]  
+def beforeShare(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    currentchat.other_adult = incoming_message
+    currentchat.init_message = "share_living_expenses"
+    currentchat.save()  
+    return["Do you share living expenses (bills, food, etc.) and share income (either your income, their income, or both incomes together) with the adult you listed above? 🏠💵","normal_yes_no"]

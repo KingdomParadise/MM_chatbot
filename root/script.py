@@ -78,10 +78,7 @@ def generateReply(chatid,incoming_message):
                                 currentchat.save()
                                 currentchat.init_message = "STARTFLOWCHART4"
                                 currentchat.save()
-                                print(currentchat.ReservationUserCode)
-                                print(currentchat.ReservationVendorCode)
-                                print(currentchat.PackageId)
-                                print(currentchat.EligibiltyPrograms)
+
 
                                 return [f'http://localhost:8000/submit_info/{chatid}','url']
                         
@@ -133,17 +130,28 @@ def generateReply(chatid,incoming_message):
             currentchat.save()
             return ["An agent will reach out shortly! Thank you for your patience.","normal_help"]  
         elif  currentchat.init_message == "check_status_lifeline":
-                if currentchat.ResidenceChat=="CA":
-                    response = CheckNladEbbApplicationStatus_API() 
-                    return          
+                if currentchat.ResidenceState=="CA":
+                    response = CheckNladEbbApplicationStatus_API(chatid) 
+                    return Check_Status_Lifeline(response,chatid)          
                 else:
-                    response = CheckNVApplicationStatus_API()
-                    return          
-
-
-                        
-
-            
+                    response = CheckNVApplicationStatus_API(chatid)
+                    return Check_Status_Lifeline(response,chatid)         
+        elif currentchat.init_message=="DisclosuresConfiguration":
+            return Disclosure(chatid)
+        elif currentchat.init_message=="iehBool":
+            return iehBool(chatid)
+        elif  currentchat.init_message=="DuplicateSubscriber":
+            return DuplicateSubscriber(incoming_message,chatid)
+        elif currentchat.init_message == "lifelineService":
+            return lifelineService(incoming_message,chatid)                 
+        elif currentchat.init_message=="otherAdult":
+            return otherAdult(incoming_message,chatid)
+        elif currentchat.init_message=="share_living_expenses":
+            return shareliving_expenses(incoming_message,chatid)   
+        elif currentchat.init_message=="before_share_living_expenses":
+            return beforeShare(incoming_message,chatid)
+        elif currentchat.init_message=="submitorder":
+            return["SubmitOrder","normal"]   
 
 
  

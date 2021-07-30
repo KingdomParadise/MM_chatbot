@@ -8,6 +8,7 @@ class ChatTracker(models.Model):
     ResidenceCity = models.CharField(max_length = 100, default = "", blank = True)
     ResidenceState = models.CharField(max_length  =100, default=True)   
     email = models.CharField(max_length=100,default="", blank=True)
+    token = models.CharField(max_length = 40,default="d3a1b634-90a7-eb11-a963-005056a96ce9")
     #user define
     flowchart3_stucked_status = models.BooleanField(default=False)
     #user define for CoverateCheck API and te future
@@ -48,6 +49,27 @@ class ChatTracker(models.Model):
 
     shipping_address = models.CharField(max_length=100,default="", blank=True)
     form_zip_code = models.CharField(max_length=100,default="", blank=True)
+    #DisclosuresConfiguration
+    iehBool = models.BooleanField(default=False)
+    benefit_code = models.CharField(max_length=10,default="")
+    zap_acct = models.CharField(max_length = 10,default="")
+    zap_name = models.CharField(max_length = 10,default="")
+    sequence_count = models.CharField(max_length = 5, default = "0")
+    islifeline_service = models.CharField(max_length=20,default="",blank=True)
+    other_adult = models.CharField(max_length=20,default="",blank=True)
+    share_liveing_expesses = models.CharField(max_length=20,default="",blank=True)
     
+
     def __str__(self):
         return str(self.chatid)+"__"+str(self.ResidenceZip)
+
+class Sequence(models.Model):
+    """
+    contains the sequence information
+    """        
+    sequence_id = models.CharField(max_length=18,primary_key=True)
+    text = models.TextField()
+    type = models.CharField(max_length = 40)
+
+    def __str__(self):
+        return self.text
