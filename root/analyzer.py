@@ -345,14 +345,14 @@ def Disclosure(id):
 def iehBool(id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
-    if currentchat.iehBool==True:
-        currentchat.init_message = "lifelineService"
-        currentchat.save()
-        return ["Does your spouse or domestic partner live with you AND already receive LifeLine phone service? Select NO if you do not have a spouse or partner. Select NO if your spouse or partner does not live with you. Select NO if your spouse or partner does not receive lifeline phone service?","normal_yes_no"]   
-    else:
-        currentchat.init_message="submitorder"
-        currentchat.save()
-        return["SubmitOrder","normal"]     
+    #if currentchat.iehBool==True:
+    currentchat.init_message = "lifelineService"
+    currentchat.save()
+    return ["Does your spouse or domestic partner live with you AND already receive LifeLine phone service? Select NO if you do not have a spouse or partner. Select NO if your spouse or partner does not live with you. Select NO if your spouse or partner does not receive lifeline phone service?","normal_yes_no"]   
+    #else:
+    #    currentchat.init_message="submitorder"
+    #    currentchat.save()
+    #    return["SubmitOrder","normal"]     
 def lifelineService(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
@@ -371,11 +371,11 @@ def otherAdult(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
 
-    if incoming_message=="OtherAdult":
+    if incoming_message=="Other Adult":
         currentchat.init_message = "before_share_living_expenses"
         currentchat.save()   
         return["Please specify:What is their relationship to you?","normal"]     
-    elif incoming_message=="NoAdult":
+    elif incoming_message=="No Adult":
         currentchat.init_message = "submitorder"
         currentchat.save() 
         return["YES! You qualify to apply for Lifeline! 🎉😁🎉","normal_autoPass"]    
