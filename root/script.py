@@ -1,4 +1,5 @@
 #from django.db.models.enums import IntegerChoices
+#from root.CSGM_APIs import Check_NVEligibility_url
 from root.analyzer import CGMChecks, EDIT_Info, EDIT_Info_item, FCRATEXT, GET_FLOWCHAT_STATE, SAVE_Info, SET_ConfirmInfo, SET_TribalResident, STARTFLOWCHAT4, setLanguageEs , setLanguageJv ,setLanguageCK 
 import requests
 from bs4 import BeautifulSoup
@@ -118,7 +119,7 @@ def generateReply(chatid,incoming_message):
             response = Lifeline_API(chatid)
             return Lifeline_state(response,chatid)      
         elif currentchat.init_message=="lifeline_success":
-            return lifeline_success(chatid)
+            return lifeline_success(incoming_message,chatid)
         elif currentchat.init_message == "setLanguageEs":
             return setLanguageEs(chatid,incoming_message)
         elif currentchat.init_message == "setLanguageCk":
@@ -150,12 +151,66 @@ def generateReply(chatid,incoming_message):
             return shareliving_expenses(incoming_message,chatid)   
         elif currentchat.init_message=="before_share_living_expenses":
             return beforeShare(incoming_message,chatid)
-        elif currentchat.init_message=="SubmitOrder":
+        elif currentchat.init_message=="submitorder":
+            print("submitorderstart")
             return getProgram(chatid) 
-
-
- 
-#     return reply
+        elif currentchat.init_message == "verifyIncome":
+            print("->verifyIncome")
+            currentchat.init_message = "uploadIncome"
+            currentchat.save()
+            return ["what dollar amount is on your income proof?","normal_autoPass"]
+        elif currentchat.init_message ==  "uploadIncome":
+            print("->uploadIncome")
+            currentchat.init_message = "moreIncome"
+            currentchat.save()
+            return ["Please upload your proof of income?","normal"]
+        elif currentchat.init_message == "moreIncome":
+            print("->moreIncome")
+            currentchat.init_message = "moreIncomeCheck"
+            currentchat.save()
+            return ["Do you have more income information to provide?","normal_yes_no"]
+        elif currentchat.init_message == "moreIncomeCheck":
+            print("-->moreincomeCheck")
+            return moreIncome(incoming_message,chatid)
+        elif currentchat.init_message == "BestWay":
+            print("->BestWay")
+            return getBestway(incoming_message,chatid)    
+        elif currentchat.init_message == "validPhoneNumber":
+            print("->validPhoneNumber")
+            return validPhoneNumber(incoming_message,chatid)
+        elif currentchat.init_message=="makePinCode":
+            print("->makePinCode")
+            return makePinCode(incoming_message,chatid)
+        elif currentchat.init_message=="runSubmitOrder":
+            print("runsubmit")
+            response = SubmitOrder_API(chatid)  
+            return submitOrder(response,chatid) 
+        elif currentchat.init_message=="checkNvEligibility":
+            print("-->checkNvEligibility")
+            response = Check_NVEligibility_API(chatid)
+            return checkNvEligibility(response,chatid)
+        elif currentchat.init_message=="Order_error":
+            return submitOrderError(incoming_message,chatid)        
+        elif currentchat.init_message == "CNEURL":
+            print("CNEURL")
+            return CNEURL(chatid)
+        elif currentchat.init_message=="PendingNational":
+            print("-->PendingNational")
+            return PendingNational(chatid)   
+        elif currentchat.init_message=="nationalVerifierHelp":
+            currentchat.init_message = "EndChat"
+            currentchat.save()
+            return ["An agent will reach out shortly! Thank you for your patience.","normal"]    
+        elif currentchat.init_message=="cenurl_send":
+            print("-->Cenurl_send")
+            return Cenurl_send(chatid)
+        elif currentchat.init_message == "wait":
+            print("-->wait")
+            return wait(chatid)   
+        elif currentchat.init_message == "checkNvEligibilityAgain":
+            print("-->checkNVeligibilityAgain")
+            return CheckNVEligibilityAgain(incoming_message,chatid)        
+# return reply
 
 if __name__ == '__main__':
      generateReply(chatid,message)

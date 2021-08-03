@@ -1,3 +1,4 @@
+#from CSGM_APIs import Check_NVEligibility_url
 from django.db import models 
 
 class ChatTracker(models.Model): 
@@ -58,8 +59,13 @@ class ChatTracker(models.Model):
     islifeline_service = models.CharField(max_length=20,default="",blank=True)
     other_adult = models.CharField(max_length=20,default="",blank=True)
     share_liveing_expesses = models.CharField(max_length=20,default="",blank=True)
-    
-
+    #SubmitOrder
+    PhoneNumber = models.CharField(max_length=10,default="",blank=True)
+    PhPinCodeoneNumber = models.CharField(max_length=4,default="",blank=True)
+    BestWayToReachYou =  models.CharField(max_length=10,default="",blank=True)
+    #CheckNVEligibility
+    ApplicationStatus = models.CharField(max_length = 50,default = "",blank = True)
+    Check_NVEligibility_url = models.CharField(max_length = 1000,default="",blank=True)
     def __str__(self):
         return str(self.chatid)+"__"+str(self.ResidenceZip)
 

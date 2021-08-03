@@ -81,11 +81,22 @@
                 </div>
                 <br>
                 <div class="input-field ">
-                    <input id="date" name="date" type="text" class="datepicker" min="1950-01-01"max="2005-01-01">
-                    <label for="date">Select Date</label>
+                    <div class="form-inline">
+                        <div style="display: inline-flex;" class="form-group">
+                            <input type="text" id="month" name= "month" class="form-control validate"  size="2" maxlength="2" placeholder="MM-"/>   
+                        </div>
+                        <div style="display: inline-flex;"class="form-group">
+                            <input type="text" id="day"name="day"  class="form-control validate"  size="2" maxlength="2" placeholder="DD-"/>
+                        </div>
+                        <div style="display: inline-flex;" class="form-group">
+                            <input type="text" id="year"  name="year" class="form-control validate" size="4" maxlength="4" placeholder="YYYY"/>
+                        </div>
+                    </div>
+                    <!-- <input id="date" name="date" type="text" class="datepicker" min="1950-01-01"max="2005-01-01"> -->
+                    <!-- <label for="date">Select Date</label> -->
                 </div>
                 <div class="input-field ">
-                    <input id="last_four_social" name="last_four_social" type="text" class="validate">
+                    <input id="last_four_social" name="last_four_social" size="4" maxlength="4"type="text" class="validate">
                     <label for="last_four_social">Last Four of Social</label>
                 </div>
                 <div>
@@ -185,6 +196,54 @@
 <script></script>
 {% block 'js' %}
 <script>
+    $("#month").keypress(function (e) {
+        
+        var key = window.event ? event.keyCode : event.which;
+        if (event.keyCode === 8 || event.keyCode === 46) {
+            return true;
+        } else if ( key < 48 || key > 57 ) {
+            return false;
+        } else {
+            return true;
+        }
+        
+    });
+    $("#day").keypress(function (e) {
+        
+        var key = window.event ? event.keyCode : event.which;
+        if (event.keyCode === 8 || event.keyCode === 46) {
+            return true;
+        } else if ( key < 48 || key > 57 ) {
+            return false;
+        } else {
+            return true;
+        }
+        
+    });
+    $("#year").keypress(function (e) {
+        
+        var key = window.event ? event.keyCode : event.which;
+        if (event.keyCode === 8 || event.keyCode === 46) {
+            return true;
+        } else if ( key < 48 || key > 57 ) {
+            return false;
+        } else {
+            return true;
+        }   
+    });
+    $("#last_four_social").keypress(function (e) {
+        
+        var key = window.event ? event.keyCode : event.which;
+        if (event.keyCode === 8 || event.keyCode === 46) {
+            return true;
+        } else if ( key < 48 || key > 57 ) {
+            return false;
+        } else {
+            return true;
+        }  
+    });
+    
+
     $('input#toggleaddress').change(function () {
         $('div#toggleaddressdiv').toggle();
     })

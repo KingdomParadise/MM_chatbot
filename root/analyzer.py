@@ -244,20 +244,19 @@ def Lifeline_state(response,id):
         currentchat.save()
         plan = ["You quality for"]
         for i in range(0,len(response['LifelinePlans'])):
-            mid = ""
-            for key in response['LifelinePlans'][i].keys():
-                mid+=(key+"-->"+str(response['LifelinePlans'][i][key])+" : ")
+            mid=(str(response['LifelinePlans'][i]["Id"]))
             plan.append(mid)
         
-        return [plan,"LifelinePlans","normal_autoPass"]
+        return [plan,"LifelinePlans","normal"]
     else:
         currentchat.init_message = "lifeline_failure"
         currentchat.save()
         return["Oh no! We could not find any plans that you qualify for.","normal_help"]              
 
-def lifeline_success(id):
+def lifeline_success(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
+    currentchat.lifelineId = incoming_message
     if currentchat.ResidenceState=="CA":
         currentchat.init_message = "setLanguageEs"
         currentchat.save()
@@ -352,7 +351,7 @@ def iehBool(id):
     else:
         currentchat.init_message="submitorder"
         currentchat.save()
-        return["SubmitOrder","normal"]     
+        return["SubmitOrdering...","normal_autoPass"]     
 def lifelineService(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
@@ -406,6 +405,162 @@ def beforeShare(incoming_message,id):
 def getProgram(id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
-    if currentchat.EligibiltyPrograms == True:
-
+    print(currentchat.program)
+    if currentchat.program == "135p":
+        currentchat.init_message = "verifyIncome"
+        currentchat.save()
         return ["To continue we'll need to verify some of your income information💲","normal_autoPass"]
+    elif currentchat.program == "150p":
+        currentchat.init_message = "verifyIncome"
+        currentchat.save()
+        return ["To continue we'll need to verify some of your income information💲","normal_autoPass"]
+    else:
+        options = ["what is the best way  to reay you ? Click one of the options below","Phone","Email","Mail"]
+        currentchat.init_message = "BestWay"
+        currentchat.save()
+        return[options,"selectOption","normal"]
+
+def moreIncome(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+    if "yes" in incoming_message:
+        return getProgram(id)
+    else:
+        options = ["what is the best way  to reach you ? Click one of the options below","Phone","Email","Mail"]
+        currentchat.init_message = "BestWay"
+        currentchat.save()
+        return[options,"selectOption","normal"]   
+
+def getBestway(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+    print("getbestway")
+    if incoming_message=="Phone":
+        print("-->phone")
+        currentchat.BestWayToReachYou = "phone"
+        currentchat.init_message = "validPhoneNumber"
+        currentchat.save()
+        return ["What is your phone number? 📱 It can look like this: 5417901356","normal"]      
+    else:
+        print("-->email")
+        currentchat.BestWayToReachYou = "email"
+        currentchat.init_message = "makePinCode"
+        currentchat.save()
+        return ["Please make a four digit PIN for your application","normal"]  
+
+def validPhoneNumber(number,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+    if len(number)==10 and str(number).isnumeric():
+        currentchat.PhoneNumber = number
+        currentchat.init_message = "makePinCode"
+        currentchat.save()
+        return ["Please make a four digit PIN for your application","normal"]
+    else:
+        return["Verify all numbers and 10 digits long","normal"]      
+
+def makePinCode(number,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+    if len(number)==4 and str(number).isnumeric():
+        currentchat.init_message = "runSubmitOrder"
+        currentchat.PinCode = number
+        currentchat.save()
+        return ["SubmitOrder Call Checking","normal_autoPass"]       
+    else:
+        return["Verify all numbers and 4 digits long","normal"]      
+def submitOrder(response,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    if response['Status'] == "Success":
+        currentchat.init_message = "checkNvEligibility"
+        currentchat.save()
+        return ["Check NV Eligibility","normal_autoPass"]
+    else:
+        currentchat.init_message = "submit  Order_error"
+        currentchat.save()
+        return["Oh no! Your order failed: How would you like to proceed?","normal_restart_help_national"]   
+def submitOrderError(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    if incoming_message=="restart":
+         currentchat.init_message==''
+         currentchat.ResidenceZip=''
+         currentchat.email=''
+         currentchat.flowchart3_stucked_status=False
+         currentchat.save()
+         return["Please restart!!","normal_autoPass"]
+    elif incoming_message=="help":
+         currentchat.init_message=='EndChat'
+         currentchat.save()
+         return["An agent will reach out shortly! Thank you for your patience.","normal"]
+    elif incoming_message=="national Verfier":
+         currentchat.init_message=='NationalVeriferQuestions'
+         currentchat.save()
+         return["NationalVeriferQuestions.","normal"]
+def checkNvEligibility(response,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    currentchat.Check_NVEligibility_url = response['Action']['RedirectUrl']
+    currentchat.save()
+    if response['Status']=="Success":
+        currentchat.ApplicationStatus = response['ApplicationStatus']
+        if response['ApplicationStatus'] in  ["PendingCertification","PendingResolution","PendingEligibility"]:
+            currentchat.init_message = "CNEURL"
+            currentchat.save()
+            return ["We've filled out most of your application in the National Verifier with the information you provided.To proceed, you'll need to confirm some of your information at the National Verifier's website.","normal_autoPass"]
+        elif response['ApplicationStatus'] == "Complete":
+            currentchat.init_message = "getLifelineform"
+            currentchat.save()
+            return ["GetLifelineForm",'normal']    
+        elif response['ApplicationStatus'] in ["PendingReview","InProgress"]:
+            currentchat.init_message = "PendingNational"
+            currentchat.save()
+            return["Your Application is Pending National Verifier Review. Click here to check the status","normal_check"]
+    else:
+        currentchat.init_message = "nationalVerifierHelp"
+        currentchat.save()
+        return ["Oh no! Your request was reject by the National Verifier.","normal_help"]    
+def PendingNational(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    currentchat.init_message = "checkNvEligibility"
+    currentchat.save()
+    return ["Check NV Eligibility","normal_autoPass"]
+def CNEURL(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    currentchat.init_message = "cenurl_send"
+    currentchat.save()
+    return["Click below ⬇When you've completed your application, you will be finished enrolling! You have 7 minutes before this link expires.","normal_check"]
+def Cenurl_send(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    currentchat.init_message = "wait"
+    currentchat.save()
+    return ["wait for 30 seconds...","normal_autoPass"]
+def wait(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first()
+    currentchat.init_message = "checkNvEligibilityAgain"
+    url = currentchat.Check_NVEligibility_url
+    currentchat.save()
+    return  [url,"url"]
+def CheckNVEligibilityAgain(incoming_message,id):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+
+    print("-->incoming_message:"+incoming_message)
+
+    if incoming_message=="yes":
+        response = Check_NVEligibility_API(id)
+        currentchat.Check_NVEligibility_url = response['Action']['RedirectUrl']
+        currentchat.init_message = "checkNvEligibility"
+        currentchat.save()
+        return [currentchat.Check_NVEligibility_url,"url"]
+    elif incoming_message ==" no":
+        currentchat.init_message = "checkNvEligibility"
+        currentchat.save()
+        return["Chekc NV Eligibility again!!!","normal_autoPass"]
+    else:
+        return["If the above link didn't work, click here(Yes) to make another!","normal_yes_no"] 

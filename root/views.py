@@ -38,7 +38,6 @@ def submit_info(request, id):
             last_name = request.POST['last_name']
             second_last_name = request.POST['second_last_name']
             suffix = request.POST['suffix']
-            date = request.POST['date']
             toggleaddress = 'toggleaddress' in request.POST.keys()
             apt_unit1 = request.POST['apt_unit1']
             apt_unit2 = request.POST['apt_unit2']
@@ -47,33 +46,10 @@ def submit_info(request, id):
             residence_address = request.POST['residence_address']
             zipcode = request.POST['zipcode']
             last_four_social = request.POST['last_four_social']
-
-            list = date.split(',')
-            day = list[0].split(' ')
-            if day[0]=="Jan":
-                date = "01-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Feb":
-                date = "02-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Mar":
-                date = "03-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Apr":
-                date = "04-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="May":
-                date = "05-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Jun":
-                date = "06-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Jul":
-                date = "07-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Aug":
-                date = "08-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Sep":
-                date = "09-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Oct":
-                date = "10-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Nov":
-                date = "11-"+day[1]+"-"+str(int(list[1]))
-            elif day[0]=="Dec":
-                date = "12-"+day[1]+"-"+str(int(list[1]))    
+            month = request.POST['month']
+            day = request.POST['day']
+            year = request.POST['year']
+            date = month+"-"+day+"-"+year
 
             item.program = program_value
             item.first_name = first_name

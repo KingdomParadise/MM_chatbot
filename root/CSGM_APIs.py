@@ -1,5 +1,7 @@
 import requests
 from requests.api import request
+from root.models import ChatTracker
+
 check_avaliability_url = 'https://lifeline.cgmllc.net/api/v2/checkavailability'
 user_confituration_url = 'https://lifeline.cgmllc.net/api/v2/userconfiguration'
 state_configuration_url = 'https://lifeline.cgmllc.net/api/v2/stateconfiguration'
@@ -9,15 +11,15 @@ check_duplicate_customer ='https://lifeline.cgmllc.net/api/v2/checkduplicatecust
 coverage_check =  'https://lifeline.cgmllc.net/api/v2/coveragecheck'
 confirm_state = 'https://lifeline.cgmllc.net/api/v2/confirmstateeligibility'
 life_line_url = "https://lifeline.cgmllc.net/api/v2/lifelineplans"
-Check_NVApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNVApplicaitonstatus"
+Check_NVApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNVApplicationstatus"
 Check_NladEbbApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNladEbbApplicationstatus"
+submit_order_url = "https://lifeline.cgmllc.net/api/v2/submitorder"
+Check_NVEligibility_url = "https://lifeline.cgmllc.net/api/v2/checknveligibility"
+
 
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
 
-import time,os,uuid,json,re,sched, timeit,django  
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PROJECT.settings')
-django.setup()
-from root.models import ChatTracker
+
 
 
 def CheckAvailability_API(zipcode,email):
@@ -230,6 +232,41 @@ def CheckNVApplicationStatus_API(id):
     res = requests.post(Check_NVApplication_Status_url,data = data).json()
     print(res)
     return   res  
+
+def SubmitOrder_API(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data = {
+        "Token":"d3a1b634-90a7-eb11-a963-005056a96ce9",
+        "PackageID": currentchat.PackageId,
+        "EligibilityProgram": currentchat.EligibiltyPrograms,
+        "FirstName": currentchat.first_name,
+        "LastName": currentchat.last_name,
+        "NameSuffix": currentchat.suffix,
+        "DateOfBirth": currentchat.date,
+        "Ssn": currentchat.last_four_social,
+        "ResidenceAddress01": currentchat.residential_address,
+        "ResidenceCity": currentchat.ResidenceCity,
+        "ResidenceState": currentchat.ResidenceState,
+        "ResidenceZip": currentchat.ResidenceZip,
+        "BestWayToReachYou": currentchat.BestWayToReachYou,
+        "PhoneNumber": currentchat.PhoneNumber,
+        "Email": currentchat.email,
+    }
+    res = requests.post(submit_order_url,data = data).json()
+    return res
+def Check_NVEligibility_API(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data = {
+        'Token':"d3a1b634-90a7-eb11-a963-005056a96ce9",
+        'PackageID': currentchat.PackageId,
+    }
+    res = requests.post(Check_NVEligibility_url,data = data).json()
+    return res
+
+
+
 if __name__ == '__main__':
     email='denea1288@gmail.com'
     email='denea128822@gmail.com'
