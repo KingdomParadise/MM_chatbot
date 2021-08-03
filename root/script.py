@@ -194,22 +194,24 @@ def generateReply(chatid,incoming_message):
         elif currentchat.init_message == "CNEURL":
             print("CNEURL")
             return CNEURL(chatid)
+        elif currentchat.init_message == "checkNvEligibilityContinue":
+            if incoming_message=="yes":
+                currentchat.init_message = "checkNvEligibility"
+                currentchat.save()
+                return ["Check NV Eligibility","normal_autoPass"]
+                
+            return["Continue Application","normal_yes"]    
         elif currentchat.init_message=="PendingNational":
             print("-->PendingNational")
             return PendingNational(chatid)   
         elif currentchat.init_message=="nationalVerifierHelp":
             currentchat.init_message = "EndChat"
             currentchat.save()
-            return ["An agent will reach out shortly! Thank you for your patience.","normal"]    
-        elif currentchat.init_message=="cenurl_send":
-            print("-->Cenurl_send")
-            return Cenurl_send(chatid)
-        elif currentchat.init_message == "wait":
-            print("-->wait")
-            return wait(chatid)   
+            return ["An agent will reach out shortly! Thank you for your patience.","normal"]      
         elif currentchat.init_message == "checkNvEligibilityAgain":
             print("-->checkNVeligibilityAgain")
-            return CheckNVEligibilityAgain(incoming_message,chatid)        
+            return CheckNVEligibilityAgain(incoming_message,chatid)   
+
 # return reply
 
 if __name__ == '__main__':

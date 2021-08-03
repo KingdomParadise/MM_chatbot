@@ -508,7 +508,8 @@ def checkNvEligibility(response,id):
         if response['ApplicationStatus'] in  ["PendingCertification","PendingResolution","PendingEligibility"]:
             currentchat.init_message = "CNEURL"
             currentchat.save()
-            return ["We've filled out most of your application in the National Verifier with the information you provided.To proceed, you'll need to confirm some of your information at the National Verifier's website.","normal_autoPass"]
+            message = ["We've filled out most of your application in the National Verifier with the information you provided.","To proceed, you'll need to confirm some of your information at the National Verifier's website.","Click below ⬇ When you've completed your application, you will be finished enrolling! You have 7 minutes before this link expires"]
+            return [message,"CheckNVEligibility","normal_autoPass"]
         elif response['ApplicationStatus'] == "Complete":
             currentchat.init_message = "getLifelineform"
             currentchat.save()
@@ -530,37 +531,24 @@ def PendingNational(id):
 def CNEURL(id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first()
-    currentchat.init_message = "cenurl_send"
-    currentchat.save()
-    return["Click below ⬇When you've completed your application, you will be finished enrolling! You have 7 minutes before this link expires.","normal_check"]
-def Cenurl_send(id):
-    currentchats = ChatTracker.objects.filter(chatid=id)      
-    currentchat = currentchats.first()
-    currentchat.init_message = "wait"
-    currentchat.save()
-    return ["wait for 30 seconds...","normal_autoPass"]
-def wait(id):
-    currentchats = ChatTracker.objects.filter(chatid=id)      
-    currentchat = currentchats.first()
     currentchat.init_message = "checkNvEligibilityAgain"
     url = currentchat.Check_NVEligibility_url
     currentchat.save()
     return  [url,"url"]
+
 def CheckNVEligibilityAgain(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)      
     currentchat = currentchats.first() 
 
-    print("-->incoming_message:"+incoming_message)
-
     if incoming_message=="yes":
         response = Check_NVEligibility_API(id)
         currentchat.Check_NVEligibility_url = response['Action']['RedirectUrl']
-        currentchat.init_message = "checkNvEligibility"
+        currentchat.init_message = "checkNvEligibilityContinue"
         currentchat.save()
         return [currentchat.Check_NVEligibility_url,"url"]
-    elif incoming_message ==" no":
+    elif incoming_message =="no":
         currentchat.init_message = "checkNvEligibility"
         currentchat.save()
-        return["Chekc NV Eligibility again!!!","normal_autoPass"]
+        return["Chekc NV Eligibility","normal_autoPass"]
     else:
         return["If the above link didn't work, click here(Yes) to make another!","normal_yes_no"] 
