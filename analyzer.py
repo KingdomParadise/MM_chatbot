@@ -547,6 +547,8 @@ def CheckNVEligibilityAgain(incoming_message,id):
         currentchat.save()
         return [currentchat.Check_NVEligibility_url,"url"]
     elif incoming_message =="no":
+        currentchat.ApplicatonStatus = "Complete"
+        currentchat.ApplicatonStatus = "Complete"
         currentchat.init_message = "checkNvEligibility"
         currentchat.save()
         return["Chekc NV Eligibility","normal_autoPass"]

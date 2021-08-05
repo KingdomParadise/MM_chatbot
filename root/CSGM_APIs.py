@@ -15,7 +15,7 @@ Check_NVApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNVAppl
 Check_NladEbbApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNladEbbApplicationstatus"
 submit_order_url = "https://lifeline.cgmllc.net/api/v2/submitorder"
 Check_NVEligibility_url = "https://lifeline.cgmllc.net/api/v2/checknveligibility"
-
+get_lifeline_url = "http://lifeline.cgmllc.net/api/v2/getlifelineform"
 
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
 
@@ -264,7 +264,15 @@ def Check_NVEligibility_API(id):
     }
     res = requests.post(Check_NVEligibility_url,data = data).json()
     return res
-
+def GetLifelineFormcall_API(chatid):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data = {
+        'Token':"d3a1b634-90a7-eb11-a963-005056a96ce9",
+        'PackageID': currentchat.PackageId,
+    }
+    res = requests.post(get_lifeline_url,data = data).json()
+    return res
 
 
 if __name__ == '__main__':

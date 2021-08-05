@@ -210,7 +210,10 @@ def generateReply(chatid,incoming_message):
             return ["An agent will reach out shortly! Thank you for your patience.","normal"]      
         elif currentchat.init_message == "checkNvEligibilityAgain":
             print("-->checkNVeligibilityAgain")
-            return CheckNVEligibilityAgain(incoming_message,chatid)   
+            return CheckNVEligibilityAgain(incoming_message,chatid) 
+        elif currentchat.init_message == "getLifelineform":
+            print("-->GetLifelineForm")
+            respone = GetLifelineFormcall_API(chatid)  
 
 # return reply
 
