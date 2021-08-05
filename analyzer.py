@@ -256,7 +256,7 @@ def Lifeline_state(response,id):
 def lifeline_success(incoming_message,id):
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
-    currentchat.lifelineId = incoming_message
+    currentchat.ServicePlan = incoming_message
     if currentchat.ResidenceState=="CA":
         currentchat.init_message = "setLanguageEs"
         currentchat.save()
@@ -548,9 +548,17 @@ def CheckNVEligibilityAgain(incoming_message,id):
         return [currentchat.Check_NVEligibility_url,"url"]
     elif incoming_message =="no":
         currentchat.ApplicatonStatus = "Complete"
-        currentchat.ApplicatonStatus = "Complete"
         currentchat.init_message = "checkNvEligibility"
         currentchat.save()
         return["Chekc NV Eligibility","normal_autoPass"]
     else:
         return["If the above link didn't work, click here(Yes) to make another!","normal_yes_no"] 
+def getLifelineform(response,chatid):
+    currentchats = ChatTracker.objects.filter(chatid=id)      
+    currentchat = currentchats.first() 
+    currentchat.init_message = "submitServiceType"
+    currentchat.save()
+    if 'Status' in response.keys():
+        return['submitServiceType','normal_autoPass']
+    else:
+        return["Here is a filled  out  copy  of your application","normal_autoPass"]    
