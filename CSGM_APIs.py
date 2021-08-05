@@ -15,7 +15,9 @@ Check_NVApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNVAppl
 Check_NladEbbApplication_Status_url = "https://lifeline.cgmllc.net/api/v2/CheckNladEbbApplicationstatus"
 submit_order_url = "https://lifeline.cgmllc.net/api/v2/submitorder"
 Check_NVEligibility_url = "https://lifeline.cgmllc.net/api/v2/checknveligibility"
-
+get_lifeline_url = "http://lifeline.cgmllc.net/api/v2/getlifelineform"
+submit_service_type_url = "https://lifeline.cgmllc.net/api/v2/submitservicetype"
+submit_service_status_url = "https://lifeline.cgmllc.net/api/v2/servicetypestatus"
 
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
 
@@ -264,6 +266,38 @@ def Check_NVEligibility_API(id):
     }
     res = requests.post(Check_NVEligibility_url,data = data).json()
     return res
+def GetLifelineFormcall_API(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data = {
+        'Token':"d3a1b634-90a7-eb11-a963-005056a96ce9",
+        'PackageID': currentchat.PackageId,
+    }
+    res = requests.post(get_lifeline_url,data = data).json()
+    return res
+
+def SubmitServiceType_API(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data - {
+    'Token' : "d3a1b634-90a7-eb11-a963-005056a96ce9",
+    'PackageID' : currentchat.PackageId,
+    'ServicePlan' : currentchat.ServicePlan
+    }
+    res = request.post(submit_service_type_url,data = data).json()
+    return res
+
+def SubmitServiceStatus_API(id):
+    currentchats = ChatTracker.objects.filter(chatid=id)
+    currentchat = currentchats.first()
+    data - {
+    'Token' : "d3a1b634-90a7-eb11-a963-005056a96ce9",
+    'PackageID' : currentchat.PackageId,
+    }
+    res = request.post(submit_service_status_url,data = data).json()
+    return res
+
+def CheckNvEligibility_API(id):
 
 
 

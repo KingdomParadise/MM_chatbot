@@ -51,6 +51,7 @@ class ChatTracker(models.Model):
     shipping_address = models.CharField(max_length=100,default="", blank=True)
     form_zip_code = models.CharField(max_length=100,default="", blank=True)
     #DisclosuresConfiguration
+    ServicePlan = models.CharField(max_length = 30,default = "",blank = True)
     iehBool = models.BooleanField(default=False)
     benefit_code = models.CharField(max_length=10,default="")
     zap_acct = models.CharField(max_length = 10,default="")
@@ -61,7 +62,7 @@ class ChatTracker(models.Model):
     share_liveing_expesses = models.CharField(max_length=20,default="",blank=True)
     #SubmitOrder
     PhoneNumber = models.CharField(max_length=10,default="",blank=True)
-    PhPinCodeoneNumber = models.CharField(max_length=4,default="",blank=True)
+    PinCode = models.CharField(max_length=4,default="",blank=True)
     BestWayToReachYou =  models.CharField(max_length=10,default="",blank=True)
     #CheckNVEligibility
     ApplicationStatus = models.CharField(max_length = 50,default = "",blank = True)
