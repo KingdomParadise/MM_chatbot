@@ -297,10 +297,6 @@ def SubmitServiceStatus_API(id):
     res = request.post(submit_service_status_url,data = data).json()
     return res
 
-def CheckNvEligibility_API(id):
-
-
-
 if __name__ == '__main__':
     email='denea1288@gmail.com'
     email='denea128822@gmail.com'
