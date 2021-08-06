@@ -128,6 +128,7 @@ def EDIT_Info(incoming_message,id):
         currentchat.save()
         return reply
     elif 'no' in incoming_message:
+
         result = NationalVerification(id)
         if  result['Status'] == "Success":
             if currentchat.ResidenceState!="CA":

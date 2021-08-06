@@ -214,28 +214,17 @@ def generateReply(chatid,incoming_message):
             print("-->GetLifelineForm")
             response = GetLifelineFormcall_API(chatid)
             return getLifelineform(response,chatid)  
-<<<<<<< HEAD
         elif currentchat.init_message == "submitServiceType":
             response1 = SubmitServiceType_API(chatid)
             print(response1)
             if response1['Status'] == "Success":
                 response2 = SubmitServiceStatus_API(chatid)
                 print(response2)
-=======
-        elif currentchat.inint_message == "submitServiceType":
-            response1 = SubmitServiceType_API(chatid)
-            if response1['Status'] == "Success":
-                response2 = SubmitServiceStatus_API(chatid)
->>>>>>> d7e8512f89d45c1015093260d7c7c3d86826988e
                 if response2['Status'] == "Success":
                     currentchat.init_message = "VeryfyCheckNVEligibility"
                     currentchat.save()
                     return["VeryfyCheckNVEligibility","normal_autoPass"]
-<<<<<<< HEAD
             currentchat.init_message = "submitService"
-=======
-            currentchat.init_message == "submitService"
->>>>>>> d7e8512f89d45c1015093260d7c7c3d86826988e
             currentchat.save()        
             return ["Oh no! We are having trouble processing your application","normal_help"]  
         elif currentchat.init_message == "submitService":
@@ -243,11 +232,7 @@ def generateReply(chatid,incoming_message):
             currentchat.save()
             if incoming_message=='help':
                 return ["An agent will reach out shortly!Thank you for you","normal"]  
-<<<<<<< HEAD
         elif  currentchat.init_message == "VeryfyCheckNVEligibility":
-=======
-        elif  currentchat.inint_message == "VeryfyCheckNVEligibility":
->>>>>>> d7e8512f89d45c1015093260d7c7c3d86826988e
             response = Check_NVEligibility_API(chatid) 
            # if response['Status']=="Success":
             if currentchat.ApplicationStatus=="Complete":
