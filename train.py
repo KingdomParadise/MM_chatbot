@@ -206,6 +206,7 @@ data = {
 get_lifeline_url = "http://lifeline.cgmllc.net/api/v2/getlifelineform"
 data = {
         'Token':"d3a1b634-90a7-eb11-a963-005056a96ce9",
+<<<<<<< HEAD
         'PackageID': "2B0B5A16-680B-4892-9671-797D64B69D23"
 }
 res = requests.post(get_lifeline_url,data = data)
@@ -226,3 +227,9 @@ data = {
     }
 res = requests.post(submit_service_status_url,data = data).json()
 print(res)
+=======
+        'PackageID': "c7ce35c5-3cf1-eb11-a965-005056a96ce9",
+}
+res = requests.post(get_lifeline_url,data = data).json()
+print(res['Status']) 
+>>>>>>> d7e8512f89d45c1015093260d7c7c3d86826988e

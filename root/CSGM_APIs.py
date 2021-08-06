@@ -18,6 +18,13 @@ Check_NVEligibility_url = "https://lifeline.cgmllc.net/api/v2/checknveligibility
 get_lifeline_url = "http://lifeline.cgmllc.net/api/v2/getlifelineform"
 submit_service_type_url = "https://lifeline.cgmllc.net/api/v2/submitservicetype"
 submit_service_status_url = "https://lifeline.cgmllc.net/api/v2/servicetypestatus"
+<<<<<<< HEAD
+=======
+
+token='d3a1b634-90a7-eb11-a963-005056a96ce9'
+
+
+>>>>>>> d7e8512f89d45c1015093260d7c7c3d86826988e
 
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
 
@@ -293,6 +300,7 @@ def SubmitServiceStatus_API(id):
     }
     res = requests.post(submit_service_status_url,data = data).json()
     return res
+
 if __name__ == '__main__':
     email='denea1288@gmail.com'
     email='denea128822@gmail.com'
