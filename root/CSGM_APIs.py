@@ -18,10 +18,8 @@ Check_NVEligibility_url = "https://lifeline.cgmllc.net/api/v2/checknveligibility
 get_lifeline_url = "http://lifeline.cgmllc.net/api/v2/getlifelineform"
 submit_service_type_url = "https://lifeline.cgmllc.net/api/v2/submitservicetype"
 submit_service_status_url = "https://lifeline.cgmllc.net/api/v2/servicetypestatus"
+
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
-
-
-
 
 def CheckAvailability_API(zipcode,email):
     print('-->> Calling CheckAvailability_API')
@@ -272,28 +270,28 @@ def GetLifelineFormcall_API(id):
         'Token':"d3a1b634-90a7-eb11-a963-005056a96ce9",
         'PackageID': currentchat.PackageId,
     }
-    res = requests.post(get_lifeline_url,data = data).json()
-    return res
+    #res = requests.post(get_lifeline_url,data = data).json()
+    return "Failure"
 
 def SubmitServiceType_API(id):
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
-    data - {
+    data = {
     'Token' : "d3a1b634-90a7-eb11-a963-005056a96ce9",
     'PackageID' : currentchat.PackageId,
     'ServicePlan' : currentchat.ServicePlan
     }
-    res = request.post(submit_service_type_url,data = data).json()
+    res = requests.post(submit_service_type_url,data = data).json()
     return res
 
 def SubmitServiceStatus_API(id):
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
-    data - {
+    data = {
     'Token' : "d3a1b634-90a7-eb11-a963-005056a96ce9",
     'PackageID' : currentchat.PackageId,
     }
-    res = request.post(submit_service_status_url,data = data).json()
+    res = requests.post(submit_service_status_url,data = data).json()
     return res
 if __name__ == '__main__':
     email='denea1288@gmail.com'

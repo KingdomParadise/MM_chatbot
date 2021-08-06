@@ -1,13 +1,12 @@
 #from django.db.models.enums import IntegerChoices
 #from root.CSGM_APIs import Check_NVEligibility_url
-from root.analyzer import CGMChecks, EDIT_Info, EDIT_Info_item, FCRATEXT, GET_FLOWCHAT_STATE, SAVE_Info, SET_ConfirmInfo, SET_TribalResident, STARTFLOWCHAT4, setLanguageEs , setLanguageJv ,setLanguageCK 
+from root.analyzer import CGMChecks, EDIT_Info, EDIT_Info_item, FCRATEXT, GET_FLOWCHAT_STATE, SAVE_Info, SET_ConfirmInfo, SET_TribalResident, STARTFLOWCHAT4, setLanguageEs , setLanguageJv ,setLanguageCK ,getLifelineform
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 import time,os,uuid,json,re,sched, timeit,django  
 from analyzer import *
-from CSGM_APIs import CheckAvailability_API, UserConfiguration_API, StateConfiguration_API, StartOrder_API, Lifeline_API, CheckNVApplicationStatus_API,CheckNladEbbApplicationStatus_API
-
+from CSGM_APIs import CheckAvailability_API, UserConfiguration_API, StateConfiguration_API, StartOrder_API, Lifeline_API, CheckNVApplicationStatus_API,CheckNladEbbApplicationStatus_API, SubmitServiceType_API, SubmitServiceStatus_API
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PROJECT.settings')
@@ -213,52 +212,55 @@ def generateReply(chatid,incoming_message):
             return CheckNVEligibilityAgain(incoming_message,chatid) 
         elif currentchat.init_message == "getLifelineform":
             print("-->GetLifelineForm")
-            respone = GetLifelineFormcall_API(chatid)
+            response = GetLifelineFormcall_API(chatid)
             return getLifelineform(response,chatid)  
-        elif currentchat.inint_message = "submitServiceType":
+        elif currentchat.init_message == "submitServiceType":
             response1 = SubmitServiceType_API(chatid)
-            if response1['Status'] = "Success":
+            print(response1)
+            if response1['Status'] == "Success":
                 response2 = SubmitServiceStatus_API(chatid)
-                if response2['Status'] = "Success":
-                    currentchat.init_message = "VeryfyCheckNVEligibility":
+                print(response2)
+                if response2['Status'] == "Success":
+                    currentchat.init_message = "VeryfyCheckNVEligibility"
                     currentchat.save()
                     return["VeryfyCheckNVEligibility","normal_autoPass"]
-            currentchat.init_message = "submitService":
+            currentchat.init_message = "submitService"
             currentchat.save()        
             return ["Oh no! We are having trouble processing your application","normal_help"]  
-        elif currentchat.init_message = "submitService":
+        elif currentchat.init_message == "submitService":
             currentchat.init_message = "EndChat"
             currentchat.save()
             if incoming_message=='help':
                 return ["An agent will reach out shortly!Thank you for you","normal"]  
-        elif  currentchat.inint_message = "VeryfyCheckNVEligibility":
+        elif  currentchat.init_message == "VeryfyCheckNVEligibility":
             response = Check_NVEligibility_API(chatid) 
-            if response['Status']=="Success":
-                currentchat.ApplicationStatus = response['ApplicationStatus']
-                crrentchat.save()
+           # if response['Status']=="Success":
+            if currentchat.ApplicationStatus=="Complete":
+                #currentchat.ApplicationStatus = response['ApplicationStatus']
+                currentchat.save()
                 if currentchat.ApplicationStatus=='Complete':
                     currentchat.init_message = "EndSuccess"
                     currentchat.save()
                     return["EndSuccess...","normal_autoPass"] 
                 else:
-                    currentchat.inint_message = "checknvEligibilityfail"
+                    currentchat.init_message = "checknvEligibilityfail"
                     currentchat.save()
                     return ["Oh no! Your application was not completed in the National Verifier","normal_help" ]    
             else:
-                    currentchat.inint_message = "checknvEligibilityfail"
+                    currentchat.init_message = "checknvEligibilityfail"
                     currentchat.save()
                     return ["Oh no!Your request was rejected by the National Verifier.","normal_help" ]     
-        elif currentchat.init_message = "checknvEligibilityfail":
+        elif currentchat.init_message == "checknvEligibilityfail":
             currentchat.init_message = "EndChat"
             currentchat.save()
             if incoming_message=='help':
                 if incoming_message=='help':
                     return ["An agent will reach out shortly!Thank you for you","normal"] 
-        elif currentchat.init_message = "EndSuccess" 
+        elif currentchat.init_message == "EndSuccess" :
             currentchat.init_message = "EndChatBefore"
             currentchat.save()
             return ["Congratulations!🥳Your application is complete!Thank you for choosing Access Wireless.Your order number is: " + str(currentchat.OrderNumber) + " We will contact you when your applications has been finalized.","normal_autoPass"] 
-        elif currentchat.init_message = "EndChatBefore" 
+        elif currentchat.init_message == "EndChatBefore" :
             currentchat.init_message = "EndChat"
             currentchat.save()
             return ["Get your friends and family FREE phone and service by sharing this link:http://m.me/accesswirelesslifeline","normal"]               
