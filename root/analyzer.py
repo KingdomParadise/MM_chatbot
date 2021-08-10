@@ -1,6 +1,6 @@
 import re,requests 
 from root.models import ChatTracker
-from CSGM_APIs import *
+from root.CSGM_APIs import *
 def INIT_MESSAGE_HANDLER(message):
     message = str(message).lower()
     possible_keywords = ['hello','hola','hi','hey','helo']
@@ -244,7 +244,7 @@ def Lifeline_state(response,id):
         currentchat.save()
         plan = ["You quality for"]
         for i in range(0,len(response['LifelinePlans'])):
-            mid=(str(response['LifelinePlans'][i]["Id"]))
+            mid=(str(response['LifelinePlans'][i]["Name"]))
             plan.append(mid)
         
         return [plan,"LifelinePlans","normal"]
@@ -340,7 +340,7 @@ def Disclosure(id):
     currentchat = currentchats.first()
     currentchat.init_message="iehBool"
     currentchat.save()
-    return [f'http://localhost:8000/start/{id}','url']
+    return [f'http://3.84.239.72:8000/start/{id}','url']
 
 def iehBool(id):
     currentchats = ChatTracker.objects.filter(chatid=id)      

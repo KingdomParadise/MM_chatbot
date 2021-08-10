@@ -22,7 +22,6 @@ submit_service_status_url = "https://lifeline.cgmllc.net/api/v2/servicetypestatu
 token='d3a1b634-90a7-eb11-a963-005056a96ce9'
 
 def CheckAvailability_API(zipcode,email):
-    print('-->> Calling CheckAvailability_API')
     res = requests.post(check_avaliability_url, data={'Token':token,'ZipCode':zipcode,'Email':email}).json()
     if res['Status']=='Success':
         return res
@@ -30,7 +29,6 @@ def CheckAvailability_API(zipcode,email):
         return None
 
 def UserConfiguration_API(id):
-    print('-->> Calling UserConfiguration_API')
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     res = requests.post(user_confituration_url,data={'Token':token}).json()
@@ -40,7 +38,6 @@ def UserConfiguration_API(id):
         return None
 
 def StateConfiguration_API(id):
-    print('-->> Calling StateConfiguration_API')
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     res = requests.post(state_configuration_url,data={'Token':token,'state':currentchat.ResidenceState}).json()
@@ -50,7 +47,6 @@ def StateConfiguration_API(id):
         return None
 
 def StartOrder_API(id):
-    print('-->> Calling StartOrder_API')
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
 
@@ -95,7 +91,6 @@ def NationalVerification(id):
     return  res  
 #Flowchat5
 def Check_dulicate_customer(id):
-    print("-->Check dulicate")
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     data = {   
@@ -116,7 +111,6 @@ def Check_dulicate_customer(id):
     else:
         return None    
 def Coverage_check(id):
-    print("-->Coverage_Check")
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     data = {
@@ -142,7 +136,6 @@ def Coverage_check(id):
         return None   
 
 def ConfirmState(id):
-    print("-->ConfirmState")
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     data = {
@@ -191,7 +184,6 @@ def Lifeline_API(id):
     res = requests.post(life_line_url,data=data).json()
     return res
 def CheckNladEbbApplicationStatus_API(id):
-    print("-->checknladebapplication")
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     data = {
@@ -208,10 +200,8 @@ def CheckNladEbbApplicationStatus_API(id):
         "Tribal" : currentchat.TribalResident,
     }
     res = requests.post(Check_NladEbbApplication_Status_url,data = data).json()
-    print(res)
     return res
 def CheckNVApplicationStatus_API(id):
-    print("-->checkknvapplication")
     currentchats = ChatTracker.objects.filter(chatid=id)
     currentchat = currentchats.first()
     data = {
@@ -227,9 +217,7 @@ def CheckNVApplicationStatus_API(id):
         "PrimaryZip" : currentchat.ResidenceZip,
         "Tribal" : currentchat.TribalResident,
     }
-    print(data)
     res = requests.post(Check_NVApplication_Status_url,data = data).json()
-    print(res)
     return   res  
 
 def SubmitOrder_API(id):

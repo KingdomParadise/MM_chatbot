@@ -1,12 +1,6 @@
-#from django.db.models.enums import IntegerChoices
-#from root.CSGM_APIs import Check_NVEligibility_url
-from root.analyzer import CGMChecks, EDIT_Info, EDIT_Info_item, FCRATEXT, GET_FLOWCHAT_STATE, SAVE_Info, SET_ConfirmInfo, SET_TribalResident, STARTFLOWCHAT4, setLanguageEs , setLanguageJv ,setLanguageCK ,getLifelineform
-import requests
-from bs4 import BeautifulSoup
-from selenium import webdriver
-import time,os,uuid,json,re,sched, timeit,django  
-from analyzer import *
-from CSGM_APIs import CheckAvailability_API, UserConfiguration_API, StateConfiguration_API, StartOrder_API, Lifeline_API, CheckNVApplicationStatus_API,CheckNladEbbApplicationStatus_API, SubmitServiceType_API, SubmitServiceStatus_API
+from root.analyzer import *
+import os,django  
+from root.CSGM_APIs import *
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'PROJECT.settings')
@@ -80,7 +74,7 @@ def generateReply(chatid,incoming_message):
                                 currentchat.save()
 
 
-                                return [f'http://localhost:8000/submit_info/{chatid}','url']
+                                return [f'http://3.84.239.72:8000/submit_info/{chatid}','url']
                         
                 currentchat.flowchart3_stucked_status=True
                 currentchat.save()
@@ -151,47 +145,40 @@ def generateReply(chatid,incoming_message):
         elif currentchat.init_message=="before_share_living_expenses":
             return beforeShare(incoming_message,chatid)
         elif currentchat.init_message=="submitorder":
-            print("submitorderstart")
             return getProgram(chatid) 
         elif currentchat.init_message == "verifyIncome":
-            print("->verifyIncome")
             currentchat.init_message = "uploadIncome"
             currentchat.save()
             return ["what dollar amount is on your income proof?","normal_autoPass"]
         elif currentchat.init_message ==  "uploadIncome":
-            print("->uploadIncome")
             currentchat.init_message = "moreIncome"
             currentchat.save()
             return ["Please upload your proof of income?","normal"]
         elif currentchat.init_message == "moreIncome":
-            print("->moreIncome")
-            currentchat.init_message = "moreIncomeCheck"
-            currentchat.save()
-            return ["Do you have more income information to provide?","normal_yes_no"]
+            if  str(incoming_message).isnumeric():
+                currentchat.Income = int(incoming_message)
+                currentchat.init_message = "moreIncomeCheck"
+                currentchat.save()
+                return ["Do you have more income information to provide?","normal_yes_no"]
+            else:
+                return ["Please Input the correct Income","normal"]    
         elif currentchat.init_message == "moreIncomeCheck":
-            print("-->moreincomeCheck")
             return moreIncome(incoming_message,chatid)
         elif currentchat.init_message == "BestWay":
-            print("->BestWay")
             return getBestway(incoming_message,chatid)    
         elif currentchat.init_message == "validPhoneNumber":
-            print("->validPhoneNumber")
             return validPhoneNumber(incoming_message,chatid)
         elif currentchat.init_message=="makePinCode":
-            print("->makePinCode")
             return makePinCode(incoming_message,chatid)
         elif currentchat.init_message=="runSubmitOrder":
-            print("runsubmit")
             response = SubmitOrder_API(chatid)  
             return submitOrder(response,chatid) 
         elif currentchat.init_message=="checkNvEligibility":
-            print("-->checkNvEligibility")
             response = Check_NVEligibility_API(chatid)
             return checkNvEligibility(response,chatid)
         elif currentchat.init_message=="Order_error":
             return submitOrderError(incoming_message,chatid)        
         elif currentchat.init_message == "CNEURL":
-            print("CNEURL")
             return CNEURL(chatid)
         elif currentchat.init_message == "checkNvEligibilityContinue":
             if incoming_message=="yes":
@@ -201,25 +188,20 @@ def generateReply(chatid,incoming_message):
                 
             return["Continue Application","normal_yes"]    
         elif currentchat.init_message=="PendingNational":
-            print("-->PendingNational")
             return PendingNational(chatid)   
         elif currentchat.init_message=="nationalVerifierHelp":
             currentchat.init_message = "EndChat"
             currentchat.save()
             return ["An agent will reach out shortly! Thank you for your patience.","normal"]      
         elif currentchat.init_message == "checkNvEligibilityAgain":
-            print("-->checkNVeligibilityAgain")
             return CheckNVEligibilityAgain(incoming_message,chatid) 
         elif currentchat.init_message == "getLifelineform":
-            print("-->GetLifelineForm")
             response = GetLifelineFormcall_API(chatid)
             return getLifelineform(response,chatid)  
         elif currentchat.init_message == "submitServiceType":
             response1 = SubmitServiceType_API(chatid)
-            print(response1)
             if response1['Status'] == "Success":
                 response2 = SubmitServiceStatus_API(chatid)
-                print(response2)
                 if response2['Status'] == "Success":
                     currentchat.init_message = "VeryfyCheckNVEligibility"
                     currentchat.save()
@@ -259,7 +241,7 @@ def generateReply(chatid,incoming_message):
         elif currentchat.init_message == "EndSuccess" :
             currentchat.init_message = "EndChatBefore"
             currentchat.save()
-            return ["Congratulations!🥳Your application is complete!Thank you for choosing Access Wireless.Your order number is: " + str(currentchat.OrderNumber) + " We will contact you when your applications has been finalized.","normal_autoPass"] 
+            return ["Congratulations! Your application is complete!Thank you for choosing Access Wireless.Your order number is: " + str(currentchat.OrderNumber) + " We will contact you when your applications has been finalized.","normal_autoPass"] 
         elif currentchat.init_message == "EndChatBefore" :
             currentchat.init_message = "EndChat"
             currentchat.save()
