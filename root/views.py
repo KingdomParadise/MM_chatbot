@@ -20,7 +20,14 @@ def index(request):
 
 @csrf_exempt
 def get_info(request,id,token,PackageId,ResidenceState,TribalResident,EligibiltyPrograms):
-        item = ChatTracker.objects.get(chatid=id)
+        items = ChatTracker.objects.filter(chatid=id)
+        if len(items) == 0:
+            data = {
+            "id" : None,
+            }
+            return JsonResponse({"message": data})
+        item = items.first()
+        #item = ChatTracker.objects.get(chatid=id)
         #save the token, packageid, residencestate,trivalresident,eligibiltyprograms into the id
         item.token = token
         item.PackageId = PackageId
@@ -30,6 +37,7 @@ def get_info(request,id,token,PackageId,ResidenceState,TribalResident,Eligibilty
         item.save()
 
         data = {
+            "id": id,
             "program" : item.program,
             "first_name" : item.first_name,
             "middle_name" : item.middle_name,
@@ -168,7 +176,6 @@ def disclosure(request,user_id):
     #user.ieh = str(response_json['CaptureIehForm']).lower()  # Update User fields
     user.iehBool = str(response_json['CaptureIehForm'])  # Update User fields
     user.save()
-
     context = {
         "sequences": sequence_list,
         "user_id": user_id

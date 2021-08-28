@@ -52,7 +52,7 @@ class ChatTracker(models.Model):
     form_zip_code = models.CharField(max_length=100,default="", blank=True)
     #DisclosuresConfiguration
     ServicePlan = models.CharField(max_length = 30,default = "",blank = True)
-    iehBool = models.BooleanField(default=False)
+    iehBool = models.BooleanField(default=True)
     benefit_code = models.CharField(max_length=10,default="")
     zap_acct = models.CharField(max_length = 10,default="")
     zap_name = models.CharField(max_length = 10,default="")
