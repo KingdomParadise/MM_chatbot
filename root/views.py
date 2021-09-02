@@ -20,13 +20,8 @@ def index(request):
 
 @csrf_exempt
 def get_info(request,id,token,PackageId,ResidenceState,TribalResident,EligibiltyPrograms):
-        items = ChatTracker.objects.filter(chatid=id)
-        if len(items) == 0:
-            data = {
-            "id" : None,
-            }
-            return JsonResponse({"message": data})
-        item = items.first()
+        item = ChatTracker.objects.get(chatid = id)
+        print("get_info-->",id,token,PackageId,ResidenceState,TribalResident,EligibiltyPrograms)
         #item = ChatTracker.objects.get(chatid=id)
         #save the token, packageid, residencestate,trivalresident,eligibiltyprograms into the id
         item.token = token
@@ -62,14 +57,32 @@ def get_ieh(request,id):
         return JsonResponse({"ieh":item.iehBool})
 
 @csrf_exempt
+def confirm(request,id):
+    if request.method=='GET':
+        ischatidexist = ChatTracker.objects.filter(chatid=id).exists()
+        if ischatidexist:
+            item = ChatTracker.objects.get(chatid = id)
+            confirm = item.form_filled
+           
+           
+            if confirm !=True:
+                return JsonResponse({"confirm":None})
+            return JsonResponse({"confirm":confirm})
+        else:
+            return JsonResponse({"confirm":None})
+            
+
+@csrf_exempt
 def submit_info(request, id):
+        print("submit_info-->",id)
         items = ChatTracker.objects.filter(chatid=id)
         if len(items) == 0:
             ChatTracker(chatid=id).save()
+        item = ChatTracker.objects.get(chatid=id)
 
         #return HttpResponse("<h1>Invalid User ID</h1>")
     
-        item = items.first()
+        #item = items.first()
         if request.method == 'GET':
             if item.form_filled:
                 return HttpResponse("<h1>Submitted :) </h1>")
@@ -94,7 +107,7 @@ def submit_info(request, id):
             day = request.POST['day']
             year = request.POST['year']
             date = month+"-"+day+"-"+year
-
+  
             item.program = program_value
             item.first_name = first_name
             item.last_name = last_name
@@ -156,9 +169,11 @@ def disclosure(request,user_id):
         'TribalResident': user.TribalResident,
         'EligibilityProgram': user.EligibiltyPrograms
     }
+    print(payload)
     response = requests.post(
         "https://lifeline.cgmllc.net/api/v2/disclosuresconfiguration",headers={"Content-Type": "application/x-www-form-urlencoded"},data=payload)
     response_json = response.json()
+    print(response_json)
     sequence_count = 0
     sequence_list = []
     for key in response_json['DisclosureItems']:
